@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="/static/js/echarts.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/form.css">
+    </head>
+    <body style="width: 100%">
+        <form action="/app/interfaceUpdata" method="post">
+            <div class="form">
+            {% csrf_token %}
+                <input type="hidden" name="name" value="{{interface.name}}">
+                <div class="tag">接口名称:</div>
+                <div class="input">{{interface.name}}</div>
+                <div style="clear: both;"></div>
+                <div class="tag">描述:</div>
+                <div class="input w300"><input type="input" class ='w300' value="{{interface.description}}" name="description"></div>
+                <div style="clear: both;"></div>
+                <div class="tag">引用:</div>
+                <div class="input"><input type="input" value="{{interface.quote}}"  name="quote"></div>
+                <div style="clear: both;"></div>
+                <div class="tag">捕获:</div>
+                <div class="input"><input type="input" value="{{interface.capture}}"  name="capture"></div>
+                <div style="clear: both;"></div>
+                <div class="tag"></div>
+                <div class="input"><input type="submit" value="保存"></div>
+            </div>
+        </form>
+        <script type="text/javascript">
+        var status = "{{status}}";
+        if (status=="1") {
+            alert("保存成功");
+        }
+        </script>
+    </body> 
+</html>
