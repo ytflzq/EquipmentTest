@@ -4,6 +4,11 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^interfaceEdit$', views.interfaceEdit),
     url(r'^interfaceUpdata$', views.interfaceUpdata),
+    url(r'^createMessage$', views.createMessage),
+    url(r'^insertMessage$', views.insertMessage),
+    url(r'^messageList$', views.messageList),
+    url(r'^importFile$', views.importFile),
+    url(r'^uploadFile$', views.uploadFile),
     url(r'^rate$', views.rate),
-     url(r'^exit$', views.exit)
+    url(r'^exit$', views.exit)
 ]

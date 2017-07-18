@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
+        <script type="text/javascript" src="/static/js/layer.js"></script>
+    </head>
+    <body style="width: 100%;padding-top: 20px;">
+        <script>
+        var status = "{{status}}";
+        if (status=="success") {
+            closeWin();
+        }
+        function closeWin(){
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭 
+            parent.layer.msg("上传成功");
+        }
+        </script>
+    </body> 
+</html>

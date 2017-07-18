@@ -3,7 +3,7 @@
     <head>
         <title></title>
         <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
-        <script type="text/javascript" src="/static/js/echarts.min.js"></script>
+        <script type="text/javascript" src="/static/js/dialog.js"></script>
         <link rel="stylesheet" type="text/css" href="/static/css/form.css">
     </head>
     <body style="width: 100%">
@@ -30,7 +30,13 @@
         <script type="text/javascript">
         var status = "{{status}}";
         if (status=="1") {
-            alert("保存成功");
+            var d = dialog({
+                content: '保存成功'
+            });
+            d.show();
+            setTimeout(function () {
+                d.close().remove();
+            }, 1000);
         }
         </script>
     </body> 

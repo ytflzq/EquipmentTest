@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
+        <script type="text/javascript" src="/static/js/layer.js"></script>
+
+    </head>
+    <body style="width: 100%;padding-top: 20px;">
+        <div class="layui-box layui-upload-button" style="margin-left: 142px;">
+            <form id="form"  method="post" key="set-mine" onchange="uploadFile();" enctype="multipart/form-data" action="/app/uploadFile">
+                    {% csrf_token %} 
+                <input name="file" id="file" class="layui-upload-file" type="file"></form>
+                <span class="layui-upload-icon"><i class="layui-icon"></i>上传文件</span>
+        </div> 
+<!--         <div style="position: absolute;bottom: 20px;right: 20px;">
+            <button class="layui-btn layui-btn-warm" onclick="save();">确定</button>
+            <button class="layui-btn" onclick="closeWin();">关闭</button>
+        </div> -->
+        <script>
+        function validateData(){
+            if ($("#file").val()=="") {
+                layer.alert("报文名称不能为空！");
+                return false;
+            }
+            return true;
+        }
+        function uploadFile(){
+            if ($("#file").val()!="") {
+                $("#form").submit();
+            }
+        }
+        function save(){ 
+            if (validateData()) {
+                $.ajax({
+                    type:"post",
+                    url:"/app/insertMessage",
+                    data: $('form').serialize(),//表单数据
+                    dataType:"json",//json,xml,html,text
+                    success:function(d){
+                        if(d=="success"){
+                            layer.msg('保存成功！');//保存成功提示
+                            parent.location.reload(); // 父页面刷新
+                            closeWin();
+                        }
+                        if(d=="error"){
+                            layer.msg('已经存在相同的报文名称!');
+                        }
+                        
+                    }
+                });
+            } 
+            
+        }
+        function closeWin(){
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭 
+        }
+        </script>
+    </body> 
+</html>
