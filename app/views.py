@@ -115,15 +115,16 @@ def rate(request):
         RequestContext(request)
     )
 def messageList(request):
-    templateFile = "index/messageList.html"
-    params={}
+    name = request.GET['name']
+    templateFile = "message/messageList.html"
+    params={"message":name}
     return render_to_response(
         templateFile,
         params,
         RequestContext(request)
     )
 def createMessage(request):
-    templateFile = "index/createMessage.html"
+    templateFile = "message/createMessage.html"
     params={}
     return render_to_response(
         templateFile,
@@ -140,6 +141,41 @@ def exit(request):
     return HttpResponseRedirect('/login')  #跳转到index界面  
 
 
+def step1(request):
+    templateFile = "message/step1.html"
+    params={}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )
+
+def step2(request):
+    templateFile = "message/step2.html"
+    params={}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )
+
+def step3(request):
+    templateFile = "message/step3.html"
+    params={}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )
+
+def step4(request):
+    templateFile = "message/step4.html"
+    params={}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )
 #******************************************处理函数**************************************************
 
 def prepareData(node,ditData):
