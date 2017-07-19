@@ -70,7 +70,7 @@ def uploadFile(request):
             RequestContext(request)
         )
 @csrf_exempt
-def insertMessage(request):
+def insertMessageGroup(request):
     name = request.POST['name']
     tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
     messages = doXml2.find_nodes(tree, "messages")
@@ -83,6 +83,22 @@ def insertMessage(request):
         x.append(doXml2.create_node("message",{"name":name},""))
     tree.write(os.path.join(BASE_DIR, 'data/config.xml'))
     status = "success"
+    return HttpResponse(json.dumps(status, ensure_ascii=False))
+
+@csrf_exempt
+def insertMessage(request):
+    name = request.POST['name']
+    messageGroupName = request.POST['messageGroupName']
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
+    message = doXml2.find_nodes(tree, "messages/message")
+    status = "error"
+    dit = {"name":name,"id":"1","length":"0","lost":"12","sou_mac":"","des_mac":"","type":"","ip":""}
+    for x in message:
+        if x.attrib['name']==messageGroupName:
+            x.append(doXml2.create_node("mes",dit,""))
+            status = "success"
+    tree.write(os.path.join(BASE_DIR, 'data/config.xml'))
+    
     return HttpResponse(json.dumps(status, ensure_ascii=False))
 @csrf_exempt
 def interfaceUpdata(request):
@@ -116,16 +132,34 @@ def rate(request):
     )
 def messageList(request):
     name = request.GET['name']
+    result = []
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
+    message = doXml2.find_nodes(tree, "messages/message")
+    for x in message:
+        if x.attrib['name']==name:
+            for mes in x.iter('mes'):
+                print mes.attrib
+                result.append(mes.attrib)
+            break
     templateFile = "message/messageList.html"
-    params={"message":name}
+    params={"message":name,"list":result}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )
+def createMessageGroup(request):
+    templateFile = "message/createMessageGroup.html"
+    params={}
     return render_to_response(
         templateFile,
         params,
         RequestContext(request)
     )
 def createMessage(request):
+    message = request.GET['message']
     templateFile = "message/createMessage.html"
-    params={}
+    params={"message":message}
     return render_to_response(
         templateFile,
         params,

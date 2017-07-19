@@ -44,7 +44,7 @@
                 padding: 0;
                 margin-left: 10px;
                 float: left;
-                width: 100px;
+                width: 140px;
                 height: 30px;
                 font-size: 14px;
                 line-height: 30px;
@@ -55,10 +55,10 @@
         <div class="container-fuild">
             <div class="row">
                 <div class="tools">
-                    <div class="toolTitle">报文名:{{message}}</div>
-                    <div class="tool" title="启动接口"><img onclick="configOption();" src="/static/img/start.png"></div>
+                    <div class="toolTitle">报文组名:{{message}}</div>
+                    <div class="tool" title="配置"><img onclick="configOption();" src="/static/img/start.png"></div>
                     <!-- <div class="tool" title="停止接口"><img onclick="stopInterface();" src="/static/img/stop.png"></div> -->
-                    <!-- <div class="tool" title="新建报文"><img onclick="addMessage();" src="/static/img/add.png"></div> -->
+                    <div class="tool" title="新建报文"><img onclick="addMessage();" src="/static/img/add.png"></div>
                     <!-- <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div> -->
                     <div class="toollast"></div>
                 </div>
@@ -68,27 +68,31 @@
                   <table class="table">
                     <thead>
                       <tr>
-                        <th>产品</th>
-                        <th>付款日期</th>
-                        <th>状态</th></tr>
+                        <th>序号</th>
+                        <th>名称</th>
+                        <th>长度</th>
+                        <th>丢包率</th>
+                        <th>源MAC</th>
+                        <th>目的MAC</th>
+                        <th>类型</th>
+                        <th>源IP</th>
+                        <th>操作</th>
+                      </tr>
                     </thead>
                     <tbody>
+                      {% for mes in list %}
                       <tr>
-                        <td>产品1</td>
-                        <td>23/11/2013</td>
-                        <td>待发货</td></tr>
-                      <tr>
-                        <td>产品2</td>
-                        <td>10/11/2013</td>
-                        <td>发货中</td></tr>
-                      <tr>
-                        <td>产品3</td>
-                        <td>20/10/2013</td>
-                        <td>待确认</td></tr>
-                      <tr>
-                        <td>产品4</td>
-                        <td>20/10/2013</td>
-                        <td>已退货</td></tr>
+                        <td>{{mes.id}}</td>
+                        <td>{{mes.name}}</td>
+                        <td>{{mes.length}}</td>
+                        <td>{{mes.lost}}</td>
+                        <td>{{mes.sou_mac}}</td>
+                        <td>{{mes.des_mac}}</td>
+                        <td>{{mes.type}}</td>
+                        <td>{{mes.ip}}</td>
+                        <td></td>
+                      </tr>
+                       {% endfor %}   
                     </tbody>
                   </table>
                 </div>
@@ -96,6 +100,17 @@
         </div>
 
         <script type="text/javascript">
+        function addMessage(){
+        parent.layer.open({
+              type: 2,
+              title: '新建报文',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              area: ['400px', '190px'],
+              offset: ['200px'],
+              content: '/app/createMessage?message={{message}}' //iframe的url
+            }); 
+        }
         parent.a = 1;
         function configOption() {
             parent.layer.open({
@@ -108,45 +123,6 @@
               area: ['500px', '400px'],
               offset: ['200px'],
               content: '/app/step1' //iframe的url
-            }); 
-        }
-        function step2() {
-            parent.layer.open({
-              type: 2,
-              title: '配置报文-第二步',
-              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
-              shade: 0.8,
-              btnAlign: 'c',
-              closeBtn:2,
-              area: ['500px', '400px'],
-              offset: ['200px'],
-              content: '/app/step2' //iframe的url
-            }); 
-        }
-        function step3() {
-            parent.layer.open({
-              type: 2,
-              title: '配置报文-第三步',
-              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
-              shade: 0.8,
-              btnAlign: 'c',
-              closeBtn:2,
-              area: ['500px', '400px'],
-              offset: ['200px'],
-              content: '/app/step3' //iframe的url
-            }); 
-        }
-        function step4() {
-            parent.layer.open({
-              type: 2,
-              title: '配置报文-第三步',
-              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
-              shade: 0.8,
-              btnAlign: 'c',
-              closeBtn:2,
-              area: ['500px', '400px'],
-              offset: ['200px'],
-              content: '/app/step3' //iframe的url
             }); 
         }
         </script>

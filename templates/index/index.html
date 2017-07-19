@@ -35,7 +35,7 @@ $(document).ready(function(){
     <div class="toolTitle">工具栏</div>
     <div class="tool" title="启动接口"><img onclick="startInterface();" src="/static/img/start.png"></div>
     <div class="tool" title="停止接口"><img onclick="stopInterface();" src="/static/img/stop.png"></div>
-    <div class="tool" title="新建报文"><img onclick="addMessage();" src="/static/img/add.png"></div>
+    <div class="tool" title="新建报文组"><img onclick="addMessage();" src="/static/img/add.png"></div>
     <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div>
     <div class="tool"></div>
 </div>
@@ -92,12 +92,12 @@ function stopInterface(){
 function addMessage(){
     layer.open({
       type: 2,
-      title: '新建报文',
+      title: '新建报文组',
       shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
       shade: 0.8,
       area: ['400px', '190px'],
       offset: ['200px'],
-      content: '/app/createMessage' //iframe的url
+      content: '/app/createMessageGroup' //iframe的url
     }); 
 }
 function importFile(){

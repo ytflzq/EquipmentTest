@@ -10,10 +10,9 @@
         <form class="layui-form" action="" id="createMessageForm">
           <div class="layui-form-item">
           {% csrf_token %}
-            <label class="layui-form-label">报文名称</label>
-            <input type="hidden" name="messageGroupName" value="{{message}}">
+            <label class="layui-form-label">报文组名称</label>
             <div class="layui-input-block">
-              <input type="text" name="name" id="name" required   placeholder="请输入报文名称" autocomplete="off" class="layui-input" style="width: 200px;">
+              <input type="text" name="name" id="name" required   placeholder="请输入报文组名称" autocomplete="off" class="layui-input" style="width: 200px;">
             </div>
           </div>
         </form>
@@ -33,7 +32,7 @@
             if (validateData()) {
                 $.ajax({
                     type:"post",
-                    url:"/app/insertMessage",
+                    url:"/app/insertMessageGroup",
                     data: $('form').serialize(),//表单数据
                     dataType:"json",//json,xml,html,text
                     success:function(d){
