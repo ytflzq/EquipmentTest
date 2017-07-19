@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Laravel</title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
+        <script type="text/javascript" src="/static/js/layer.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+        <style type="text/css">
+            .row{
+                margin-left: 0px;
+            }
+            .tools{
+                top: 30px;
+                width: 100%;
+                height: 30px;
+                background-color: #FBD1D1;
+            }
+            .tool{
+                margin: 0;
+                padding: 0;
+                margin-right: 10px;
+                float: right;
+                width: 30px;
+                height: 30px;
+            }
+            .tool>img{
+                margin-top: 9px;
+                margin-left: 8px;
+                width: 12px;
+                height: 12px;
+                cursor: pointer;
+            }
+            .toollast{
+                margin: 0;
+                padding: 0;
+                margin-right: 150px;
+                float: right;
+                width: 30px;
+                height: 30px;
+            }
+            .toolTitle{
+                margin: 0;
+                padding: 0;
+                margin-left: 10px;
+                float: left;
+                width: 100px;
+                height: 30px;
+                font-size: 14px;
+                line-height: 30px;
+            }
+        </style>
+    </head>
+    <body style="width: 100%;padding: 0;margin:0 ">
+        <div class="container-fuild">
+            <div class="row">
+                <div class="tools">
+                    <div class="toolTitle">报文名:{{message}}</div>
+                    <div class="tool" title="启动接口"><img onclick="configOption();" src="/static/img/start.png"></div>
+                    <!-- <div class="tool" title="停止接口"><img onclick="stopInterface();" src="/static/img/stop.png"></div> -->
+                    <!-- <div class="tool" title="新建报文"><img onclick="addMessage();" src="/static/img/add.png"></div> -->
+                    <!-- <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div> -->
+                    <div class="toollast"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>产品</th>
+                        <th>付款日期</th>
+                        <th>状态</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>产品1</td>
+                        <td>23/11/2013</td>
+                        <td>待发货</td></tr>
+                      <tr>
+                        <td>产品2</td>
+                        <td>10/11/2013</td>
+                        <td>发货中</td></tr>
+                      <tr>
+                        <td>产品3</td>
+                        <td>20/10/2013</td>
+                        <td>待确认</td></tr>
+                      <tr>
+                        <td>产品4</td>
+                        <td>20/10/2013</td>
+                        <td>已退货</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+        parent.a = 1;
+        function configOption() {
+            parent.layer.open({
+              type: 2,
+              title: '配置报文-第一步',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              btnAlign: 'c',
+              closeBtn:2,
+              area: ['500px', '400px'],
+              offset: ['200px'],
+              content: '/app/step1' //iframe的url
+            }); 
+        }
+        function step2() {
+            parent.layer.open({
+              type: 2,
+              title: '配置报文-第二步',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              btnAlign: 'c',
+              closeBtn:2,
+              area: ['500px', '400px'],
+              offset: ['200px'],
+              content: '/app/step2' //iframe的url
+            }); 
+        }
+        function step3() {
+            parent.layer.open({
+              type: 2,
+              title: '配置报文-第三步',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              btnAlign: 'c',
+              closeBtn:2,
+              area: ['500px', '400px'],
+              offset: ['200px'],
+              content: '/app/step3' //iframe的url
+            }); 
+        }
+        function step4() {
+            parent.layer.open({
+              type: 2,
+              title: '配置报文-第三步',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              btnAlign: 'c',
+              closeBtn:2,
+              area: ['500px', '400px'],
+              offset: ['200px'],
+              content: '/app/step3' //iframe的url
+            }); 
+        }
+        </script>
+    </body> 
+</html>

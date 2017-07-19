@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Laravel</title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
+        <script type="text/javascript" src="/static/js/layer.js"></script>
+        <style type="text/css">
+            .row{
+                margin-left: 0px;
+            }
+            
+        </style>
+    </head>
+    <body style="width: 100%;padding: 0;margin:0 ">
+        <div class="container-fuild">
+            <div class="row">
+                step1
+            </div>
+        </div>
+        <div style="position: absolute;bottom: 20px;right: 20px;">
+            <button class="layui-btn layui-btn-warm" onclick="step2();">下一步</button>
+            <!-- <button class="layui-btn" onclick="closeWin();">关闭</button> -->
+        </div>
+        <script type="text/javascript">
+        alert(parent.a);
+        parent.a=2;
+        function step2() {
+            parent.layer.open({
+              type: 2,
+              title: '配置报文-第二步',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              btnAlign: 'c',
+              closeBtn:2,
+              area: ['500px', '400px'],
+              offset: ['200px'],
+              content: '/app/step2' //iframe的url
+            }); 
+        }
+        </script>
+    </body> 
+</html>
