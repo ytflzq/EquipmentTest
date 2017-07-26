@@ -5,6 +5,7 @@
         <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
         <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
         <script type="text/javascript" src="/static/js/layer.js"></script>
+        <script type="text/javascript" src="/static/js/layui.js"></script>
         <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
         <style type="text/css">
             .row{
@@ -70,10 +71,18 @@
                 </div>
             </div>
             <div class="row">
-                <div class="table-responsive">
-                  <table class="table">
+                <div class="layui-form">
+                  <table class="layui-table">
+                    <colgroup>
+                      <col>
+                      <col>
+                      <col>
+                      <col>
+                      <col>
+                    </colgroup>
                     <thead>
                       <tr>
+                        <th><input name="" lay-skin="primary" lay-filter="allChoose" type="checkbox"></th>
                         <th>序号</th>
                         <th>名称</th>
                         <th>长度</th>
@@ -83,11 +92,12 @@
                         <th>类型</th>
                         <th>源IP</th>
                         <th>操作</th>
-                      </tr>
+                      </tr> 
                     </thead>
                     <tbody>
-                      {% for mes in list %}
+                    {% for mes in list %}
                       <tr>
+                        <td><input name="" lay-skin="primary" type="checkbox"></td>
                         <td>{{forloop.counter}}</td>
                         <td>{{mes.name}}</td>
                         <td>{{mes.length}}</td>
@@ -100,7 +110,7 @@
                             <button class="btn btn-mini" onclick="configOption('{{mes.name}}');" type="button">配置</button>
                         </td>
                       </tr>
-                       {% endfor %}   
+                      {% endfor %}   
                     </tbody>
                   </table>
                 </div>
@@ -108,6 +118,19 @@
         </div>
 
         <script type="text/javascript">
+        layui.use('form', function(){
+          var $ = layui.jquery, form = layui.form();
+          
+          //全选
+          form.on('checkbox(allChoose)', function(data){
+            var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+            child.each(function(index, item){
+              item.checked = data.elem.checked;
+            });
+            form.render('checkbox');
+          });
+          
+        });
         function addMessage(){
         parent.layer.open({
               type: 2,
@@ -128,8 +151,8 @@
               shade: 0.8,
               btnAlign: 'c',
               closeBtn:2,
-              area: ['600px', '500px'],
-              offset: ['200px'],
+              area: ['600px', '700px'],
+              offset: ['100px'],
               content: '/app/eth' //iframe的url
             }); 
         }
