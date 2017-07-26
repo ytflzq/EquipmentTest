@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Laravel</title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
+        <script type="text/javascript" src="/static/js/layer.js"></script>
+        <style type="text/css">
+            .row{
+                margin-left: 0px;
+            }
+            
+        </style>
+    </head>
+    <body style="width: 100%;padding: 0;margin:0 ">
+        <div class="container">
+            <div class="row">
+                  <div class="form">
+                    {% csrf_token %}
+                    <input type="hidden" name="name" value="{{interface.name}}">
+                    <div class="tag">接口名称:</div>
+                    <div class="input">{{interface.name}}</div>
+                    <div style="clear: both;"></div>
+                    <div class="tag">描述:</div>
+                    <div class="input w300"><input type="input" class ='w300' value="{{interface.description}}" name="description"></div>
+                    <div style="clear: both;"></div>
+                    <div class="tag">引用:</div>
+                    <div class="input"><input type="input" value="{{interface.quote}}"  name="quote"></div>
+                    <div style="clear: both;"></div>
+                    <div class="tag">捕获:</div>
+                    <div class="input"><input type="input" value="{{interface.capture}}"  name="capture"></div>
+                    <div style="clear: both;"></div>
+                    <div class="tag"></div>
+                    <div class="input"><input type="submit" value="保存"></div>
+                </div>
+            </div>
+        </div>
+        <div style="position: absolute;bottom: 20px;right: 20px;">
+            <button class="layui-btn layui-btn-warm" onclick="step2();">下一步</button>
+            <button class="layui-btn" onclick="closeWin();">保存</button>
+        </div>
+        <script type="text/javascript">
+        parent.a=2;
+        function step2() {
+            parent.layer.open({
+              type: 2,
+              title: '配置报文-第二步',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              btnAlign: 'c',
+              closeBtn:2,
+              area: ['600px', '500px'],
+              offset: ['200px'],
+              content: '/app/step2' //iframe的url
+            }); 
+        }
+        </script>
+    </body> 
+</html>

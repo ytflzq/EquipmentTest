@@ -49,6 +49,12 @@
                 font-size: 14px;
                 line-height: 30px;
             }
+            .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th{
+                padding: 2px;
+            }
+            .btn{
+                padding: 0;
+            }
         </style>
     </head>
     <body style="width: 100%;padding: 0;margin:0 ">
@@ -82,15 +88,17 @@
                     <tbody>
                       {% for mes in list %}
                       <tr>
-                        <td>{{mes.id}}</td>
+                        <td>{{forloop.counter}}</td>
                         <td>{{mes.name}}</td>
                         <td>{{mes.length}}</td>
-                        <td>{{mes.lost}}</td>
-                        <td>{{mes.sou_mac}}</td>
-                        <td>{{mes.des_mac}}</td>
-                        <td>{{mes.type}}</td>
+                        <td>{{mes.lostrate}}</td>
+                        <td>{{mes.smac}}</td>
+                        <td>{{mes.dmac}}</td>
+                        <td>{{mes.ethtype}}</td>
                         <td>{{mes.ip}}</td>
-                        <td></td>
+                        <td>
+                            <button class="btn btn-mini" onclick="configOption('{{mes.name}}');" type="button">配置</button>
+                        </td>
                       </tr>
                        {% endfor %}   
                     </tbody>
@@ -115,14 +123,14 @@
         function configOption() {
             parent.layer.open({
               type: 2,
-              title: '配置报文-第一步',
+              title: '配置报文-ethernetii',
               shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
               shade: 0.8,
               btnAlign: 'c',
               closeBtn:2,
-              area: ['500px', '400px'],
+              area: ['600px', '500px'],
               offset: ['200px'],
-              content: '/app/step1' //iframe的url
+              content: '/app/eth' //iframe的url
             }); 
         }
         </script>

@@ -32,7 +32,7 @@
             if (validateData()) {
                 $.ajax({
                     type:"post",
-                    url:"/app/insertMessageGroup",
+                    url:"/app/insertPacketGroup",
                     data: $('form').serialize(),//表单数据
                     dataType:"json",//json,xml,html,text
                     success:function(d){

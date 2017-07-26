@@ -47,3 +47,11 @@ def create_node(tag, property_map, content):
     element = Element(tag, property_map)  
     element.text = content  
     return element   
+
+if __name__ == '__main__':
+  print 1
+  tree = read_xml('/opt/EquipmentTest/data/configpacket.xml')
+  root = tree.getroot()
+  PacketGroup = root.findall("./PacketGroup")
+  print PacketGroup
+    

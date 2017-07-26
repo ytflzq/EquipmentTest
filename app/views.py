@@ -20,8 +20,9 @@ def index(request):
     role_id = request.session.get('role_id',default=False)
     templateFile = "index/index.html"
     interfaces = getInterfaces()
-    messages = getMessages()
-    params={"name":name,"interfaces":interfaces,"messages":messages}
+    packetGroups = getPacketGroups()
+    print packetGroups
+    params={"name":name,"interfaces":interfaces,"packetGroups":packetGroups}
     return render_to_response(
         templateFile,
         params,
@@ -70,35 +71,33 @@ def uploadFile(request):
             RequestContext(request)
         )
 @csrf_exempt
-def insertMessageGroup(request):
+def insertPacketGroup(request):
     name = request.POST['name']
-    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
-    messages = doXml2.find_nodes(tree, "messages")
-    message = doXml2.find_nodes(tree, "messages/message")
-    for x in message:
-        if x.attrib['name']==name:
-            status = "error"
-            return HttpResponse(json.dumps(status, ensure_ascii=False))
-    for x in messages:
-        x.append(doXml2.create_node("message",{"name":name},""))
-    tree.write(os.path.join(BASE_DIR, 'data/config.xml'))
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/configpacket.xml'))
+    status = "error"
+    if name in getPacketGroups():
+        return HttpResponse(json.dumps(status, ensure_ascii=False))
+    PacketGroup =  createPacketGroupElement(name)
+    tree.getroot().append(PacketGroup)
+    tree.write(os.path.join(BASE_DIR, 'data/configpacket.xml'))
     status = "success"
     return HttpResponse(json.dumps(status, ensure_ascii=False))
 
+
 @csrf_exempt
-def insertMessage(request):
+def insertPacket(request):
     name = request.POST['name']
-    messageGroupName = request.POST['messageGroupName']
-    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
-    message = doXml2.find_nodes(tree, "messages/message")
+    packetGroupName = request.POST['messageGroupName']
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/configpacket.xml'))
     status = "error"
-    dit = {"name":name,"id":"1","length":"0","lost":"12","sou_mac":"","des_mac":"","type":"","ip":""}
-    for x in message:
-        if x.attrib['name']==messageGroupName:
-            x.append(doXml2.create_node("mes",dit,""))
+    PacketItem =  createPacketElement(name)
+    print PacketItem
+    root = tree.getroot()
+    for PacketGroup in root.findall('./PacketGroup'):
+        if PacketGroup.find("name").text==packetGroupName:
+            PacketGroup.find("PacketItems").append(PacketItem)
             status = "success"
-    tree.write(os.path.join(BASE_DIR, 'data/config.xml'))
-    
+    tree.write(os.path.join(BASE_DIR, 'data/configpacket.xml'))
     return HttpResponse(json.dumps(status, ensure_ascii=False))
 @csrf_exempt
 def interfaceUpdata(request):
@@ -133,14 +132,21 @@ def rate(request):
 def messageList(request):
     name = request.GET['name']
     result = []
-    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
-    message = doXml2.find_nodes(tree, "messages/message")
-    for x in message:
-        if x.attrib['name']==name:
-            for mes in x.iter('mes'):
-                print mes.attrib
-                result.append(mes.attrib)
-            break
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/configpacket.xml'))
+    root = tree.getroot()
+    for PacketGroup in root.findall('./PacketGroup'):
+        
+        if PacketGroup.find("name").text==name:
+            for PacketItem in PacketGroup.findall("./PacketItems/PacketItem"):
+                data = {}
+                data['name'] = PacketItem.find('name').text
+                data['smac'] = PacketItem.find('items/item/data/smac').text
+                data['dmac'] = PacketItem.find('items/item/data/dmac').text
+                data['ethtype'] = PacketItem.find('items/item/data/ethtype/value').text
+                data['length'] = 0
+                data['lostrate'] = PacketItem.find('lostrate').text
+                result.append(data)
+    print result
     templateFile = "message/messageList.html"
     params={"message":name,"list":result}
     return render_to_response(
@@ -175,8 +181,8 @@ def exit(request):
     return HttpResponseRedirect('/login')  #跳转到index界面  
 
 
-def step1(request):
-    templateFile = "message/step1.html"
+def eth(request):
+    templateFile = "message/eth.html"
     params={}
     return render_to_response(
         templateFile,
@@ -217,18 +223,19 @@ def prepareData(node,ditData):
         node.set(str(key),str(value))
     return node
 
+def getPacketGroups():
+    data = []
+    print "read xml",os.path.join(BASE_DIR, 'data/configpacket.xml')
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/configpacket.xml'))
+    root = tree.getroot()
+    for name in root.findall('./PacketGroup/name'):
+        data.append(name.text)
+    return data
 def getInterfaces():
     data = []
     tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
     interfaces = doXml2.find_nodes(tree, "interfaces/interface")
     for x in interfaces:
-        data.append(x.attrib)
-    return data
-def getMessages():
-    data = []
-    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
-    messages = doXml2.find_nodes(tree, "messages/message")
-    for x in messages:
         data.append(x.attrib)
     return data
 def getInterfaceByName(name):
@@ -239,3 +246,27 @@ def getInterfaceByName(name):
             return x.attrib
     return None
  
+def createPacketGroupElement(name):
+    PacketGroup =  doXml2.create_node("PacketGroup",{},"")
+    name = doXml2.create_node("name",{},name)
+    interval = doXml2.create_node("interval",{},"1000")
+    cntperitval = doXml2.create_node("cntperitval",{},"0")
+    loopcount = doXml2.create_node("loopcount",{},"0")
+    incdec = doXml2.create_node("incdec",{},"true")
+    PacketItems = doXml2.create_node("PacketItems",{},"")
+    PacketGroup.append(name)
+    PacketGroup.append(interval)
+    PacketGroup.append(cntperitval)
+    PacketGroup.append(loopcount)
+    PacketGroup.append(incdec)
+    PacketGroup.append(PacketItems)
+    return PacketGroup
+
+def createPacketElement(name):
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/PacketItem.xml'))
+    root = tree.getroot()
+    PacketItem = root.find('./PacketGroup/PacketItems/PacketItem')
+    PacketItem
+    name = doXml2.create_node("name",{},name)
+    PacketItem.append(name)
+    return PacketItem

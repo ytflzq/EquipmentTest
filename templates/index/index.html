@@ -58,9 +58,8 @@ $(document).ready(function(){
         </div>  
         <div class="nav_list"> 
           <ul> 
-            {% for message in messages %}
-            <!-- <li url="/app/interfaceEdit?name={{interface.name}}">{{interface.name}}</li>   -->
-            <li url="/app/messageList?name={{message.name}}">{{message.name}}</li>  
+            {% for packetGroup in packetGroups %}
+            <li url="/app/messageList?name={{packetGroup}}">{{packetGroup}}</li>  
             {% endfor %}  
           </ul> 
         </div>  
