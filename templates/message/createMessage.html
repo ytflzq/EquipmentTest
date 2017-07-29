@@ -39,8 +39,8 @@
                     success:function(d){
                         if(d=="success"){
                             layer.msg('保存成功！');//保存成功提示
-                            parent.location.reload(); // 父页面刷新
                             closeWin();
+                            $(parent.document).find("#iframeParent").attr("src","/app/messageList?name={{message}}");
                         }
                         if(d=="error"){
                             layer.msg('已经存在相同的报文名称!');
@@ -49,7 +49,6 @@
                     }
                 });
             } 
-            
         }
         function closeWin(){
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引

@@ -25,8 +25,22 @@
                 width: 30px;
                 height: 30px;
             }
-            .tool>img{
+            .toolfrist{
+                margin: 0;
+                padding: 0;
+                margin-right: 100px;
+                float: right;
+                width: 30px;
+                height: 30px;
+            }
+            .toolfrist>img,.tool>img{
                 margin-top: 9px;
+                margin-left: 8px;
+                width: 12px;
+                height: 12px;
+                cursor: pointer;
+            }
+            .toolTitle>img{
                 margin-left: 8px;
                 width: 12px;
                 height: 12px;
@@ -45,13 +59,16 @@
                 padding: 0;
                 margin-left: 10px;
                 float: left;
-                width: 140px;
+                width: 400px;
                 height: 30px;
                 font-size: 14px;
                 line-height: 30px;
             }
             .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th{
                 padding: 2px;
+            }
+            .layui-table{
+              margin: 0;
             }
             .btn{
                 padding: 0;
@@ -62,10 +79,12 @@
         <div class="container-fuild">
             <div class="row">
                 <div class="tools">
-                    <div class="toolTitle">报文组名:{{message}}</div>
-                    <div class="tool" title="配置"><img onclick="configOption();" src="/static/img/start.png"></div>
-                    <!-- <div class="tool" title="停止接口"><img onclick="stopInterface();" src="/static/img/stop.png"></div> -->
-                    <div class="tool" title="新建报文"><img onclick="addMessage();" src="/static/img/add.png"></div>
+                    <div class="toolTitle">报文组名:{{message}}<img onclick="stopInterface();" title="删除报文组" src="/static/img/delete.png"></div>
+                    <div class="toolfrist" title="新建报文"><img onclick="addMessage();" src="/static/img/add.png"></div>
+                    <!-- <div class="tool" title="配置"><img onclick="configOption();" src="/static/img/start.png"></div> -->
+                    <!-- <div class="tool" title="停止接口"><img onclick="eleteInterface();" src="/static/img/stop.png"></div> -->
+
+                    
                     <!-- <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div> -->
                     <div class="toollast"></div>
                 </div>
@@ -82,7 +101,7 @@
                     </colgroup>
                     <thead>
                       <tr>
-                        <th><input name="" lay-skin="primary" lay-filter="allChoose" type="checkbox"></th>
+                        <!-- <th><input name="" lay-skin="primary" lay-filter="allChoose" type="checkbox"></th> -->
                         <th>序号</th>
                         <th>名称</th>
                         <th>长度</th>
@@ -97,7 +116,7 @@
                     <tbody>
                     {% for mes in list %}
                       <tr>
-                        <td><input name="" lay-skin="primary" type="checkbox"></td>
+                        <!-- <td><input name="" lay-skin="primary"   type="checkbox"></td> -->
                         <td>{{forloop.counter}}</td>
                         <td>{{mes.name}}</td>
                         <td>{{mes.length}}</td>
@@ -107,6 +126,7 @@
                         <td>{{mes.ethtype}}</td>
                         <td>{{mes.ip}}</td>
                         <td>
+                            <button class="btn btn-mini" onclick="deleteOption('{{mes.name}}');" type="button">删除</button>
                             <button class="btn btn-mini" onclick="configOption('{{mes.name}}');" type="button">配置</button>
                         </td>
                       </tr>
@@ -132,18 +152,25 @@
           
         });
         function addMessage(){
-        parent.layer.open({
-              type: 2,
-              title: '新建报文',
-              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
-              shade: 0.8,
-              area: ['400px', '190px'],
-              offset: ['200px'],
-              content: '/app/createMessage?message={{message}}' //iframe的url
-            }); 
+            parent.layer.open({
+                  type: 2,
+                  title: '新建报文',
+                  shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+                  shade: 0.8,
+                  area: ['400px', '190px'],
+                  offset: ['200px'],
+                  content: '/app/createMessage?message={{message}}&messageGroupName={{message}}' //iframe的url
+                }); 
+        }
+        function deleteOption(name){
+          parent.layer.confirm('您确定要删除当前配置么？', {area: ['400px', '190px'],offset: ['200px'],icon: 3, title:'提示'}, function(index){
+            window.location = "/app/deletePacket?packet="+name+"&messageGroupName={{message}}";
+            // $(parent).find("#iframeParent").attr("src","aaa");
+            parent.layer.close(index);
+          });
         }
         parent.a = 1;
-        function configOption() {
+        function configOption(packet) {
             parent.layer.open({
               type: 2,
               title: '配置报文-ethernetii',
@@ -153,7 +180,7 @@
               closeBtn:2,
               area: ['580px', '800px'],
               offset: ['50px'],
-              content: '/app/eth' //iframe的url
+              content: "/app/eth?packet="+packet+"&packetGroupName={{message}}" //iframe的url
             }); 
         }
         </script>

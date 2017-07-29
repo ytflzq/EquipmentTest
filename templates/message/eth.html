@@ -1,88 +1,89 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Laravel</title>
+        <title>rth</title>
         <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
         <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
         <script type="text/javascript" src="/static/js/layer.js"></script>
         <style type="text/css">
-            .row{
-                margin-left: 0px;
-            }
-            .form{
-                margin:20px;
-            }
-        .layui-elem-field legend {
-            font-size: 15px;
-            font-weight: bolder;
-            margin-left: 20px;
-            padding: 0 5px;
-        }
-        .layui-input, .layui-textarea{
-            width: 150px;
-        }
+          .row{
+              margin-left: 0px;
+          }
+          .form{
+              margin:20px;
+          }
+          .layui-elem-field legend {
+              font-size: 15px;
+              font-weight: bolder;
+              margin-left: 20px;
+              padding: 0 5px;
+          }
+          .layui-input, .layui-textarea{
+              width: 150px;
+          }
 
-        .layui-form-select dl {
-          width: 150px;
-          top: 25px;
-        }
-        .layui-form-item .layui-inline {
-            margin-bottom: 0;
-            margin-right: 10px;
-        }
-        .layui-form-item {
-              clear: both;
-              margin-bottom: 5px;
-        }
-        .layui-form-label{
-          padding: 0;
-        }
-        .layui-input-block {
-            margin-left: 110px;
-            min-height: 10px;
-        }
-        .layui-input, .layui-textarea, .layui-select {
-            background-color: #fff;
-            border: 1px solid #e6e6e6;
-            border-radius: 2px;
-            height: 25px;
-            line-height: 25px;
-        }
-        /*.layui-form-radio {
-            cursor: pointer;
-            display: inline-block;
-            font-size: 0;
-            line-height: 20px;
-            margin:0;
-            padding-right: 10px;
-            vertical-align: middle;
-        }*/
-        .kuang1{
-         position: absolute;
-         height: 128px;
-         left: 16px;
-         width:545px; 
-         top: 235px;
-         border: 1px solid #e6e6e6; 
-        }
-        .kuang2{
-         position: absolute;
-         height: 128px;
-         left: 16px;
-         width:545px; 
-         top: 376px;
-         border: 1px solid #e6e6e6; 
-        }
-        .layui-field-title{
-          border-width: 10px medium medium;
-        }
+          .layui-form-select dl {
+            width: 150px;
+            top: 25px;
+          }
+          .layui-form-item .layui-inline {
+              margin-bottom: 0;
+              margin-right: 10px;
+          }
+          .layui-form-item {
+                clear: both;
+                margin-bottom: 5px;
+          }
+          .layui-form-label{
+            padding: 0;
+          }
+          .layui-input-block {
+              margin-left: 110px;
+              min-height: 10px;
+          }
+          .layui-input, .layui-textarea, .layui-select {
+              background-color: #fff;
+              border: 1px solid #e6e6e6;
+              border-radius: 2px;
+              height: 25px;
+              line-height: 25px;
+          }
+          /*.layui-form-radio {
+              cursor: pointer;
+              display: inline-block;
+              font-size: 0;
+              line-height: 20px;
+              margin:0;
+              padding-right: 10px;
+              vertical-align: middle;
+          }*/
+          .kuang1{
+           position: absolute;
+           height: 128px;
+           left: 16px;
+           width:545px; 
+           top: 235px;
+           border: 1px solid #e6e6e6; 
+          }
+          .kuang2{
+           position: absolute;
+           height: 128px;
+           left: 16px;
+           width:545px; 
+           top: 376px;
+           border: 1px solid #e6e6e6; 
+          }
+          .layui-field-title{
+            border-width: 10px medium medium;
+          }
         </style>
     </head>
     <body style="width: 100%;padding: 0;margin:0 ">
         <div class="container">
             <div class="row">
-                  
-                  <form class="layui-form" action="">
+                  <form class="layui-form">
+                      <input type="hidden" name="packetGroupName" value="{{packetGroupName}}">
+                      <input type="hidden" name="packet" value="{{packet}}">
                       <div class="kuang1"></div>
                       <div class="kuang2"></div>
                       <fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
@@ -92,16 +93,20 @@
                        <div class="layui-inline">
                           <label class="layui-form-label">目的MAC</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;" value="7A:7A:C0:A8:C8:01" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
+                            <input type="text" name="dmac" style="width: 150px;" value="{{eth.dmac}}" name="title" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                         </div>
                          <div class="layui-inline">
                            <label class="layui-form-label">ACTION</label>
                           <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
+                            <select name="dmacaction" lay-filter="dmacaction" lay-verify="required">
+                                {% for mes in action %}
+                                  {% ifequal eth.dmacaction mes %}
+                                  <option value="{{mes}}" selected>{{mes}}</option>
+                                  {% else %}
+                                  <option value="{{mes}}">{{mes}}</option>
+                                  {% endifequal  %}
+                                {% endfor %}
                               </select>
                           </div>
                          </div>
@@ -111,13 +116,13 @@
                        <div class="layui-inline">
                           <label class="layui-form-label">Num</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;"value="1" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
+                            <input type="text" name="dmacnum" value="{{eth.dmacnum}}" id="dmacnum" style="width: 150px;"  required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                         </div>
                          <div class="layui-inline">
                            <label class="layui-form-label">Loop</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;" value="0" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
+                            <input type="text" name="dmacloop" style="width: 150px;" id="dmacloop" value="{{eth.dmacloop}}"" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                          </div>
                       </div>
@@ -126,16 +131,20 @@
                        <div class="layui-inline">
                           <label class="layui-form-label">源MAC</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;" value="7A:7A:C0:A8:C8:01" name="title" required  lay-verify="required" placeholder="请输入源MAC地址" autocomplete="off" class="layui-input">
+                            <input type="text" style="width: 150px;" name="smac" value="{{eth.smac}}" name="title" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                         </div>
                          <div class="layui-inline">
                            <label class="layui-form-label">ACTION</label>
                           <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
+                            <select name="smacaction" lay-filter="smacaction" lay-verify="required">
+                                {% for mes in action %}
+                                  {% ifequal eth.smacaction mes %}
+                                  <option value="{{mes}}" selected>{{mes}}</option>
+                                  {% else %}
+                                  <option value="{{mes}}">{{mes}}</option>
+                                  {% endifequal  %}
+                                {% endfor %}
                               </select>
                           </div>
                          </div>
@@ -145,13 +154,13 @@
                        <div class="layui-inline">
                           <label class="layui-form-label">Num</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;"value="1" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
+                            <input type="text" style="width: 150px;" value="{{eth.smacnum}}" id="smacnum" name="smacnum" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                         </div>
                          <div class="layui-inline">
                            <label class="layui-form-label">Loop</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;" value="0" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
+                            <input type="text" style="width: 150px;" value="{{eth.smacloop}}" id="smacloop" name="smacloop" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                          </div>
                       </div>
@@ -163,52 +172,127 @@
                       <div class="layui-form-item">
                         <label class="layui-form-label" style="padding: 9px 15px;">Vlan</label>
                         <div class="layui-input-block">
-                          <input type="radio" name="vlan" value="No FCS" title="No Vlan" checked>
-                          <input type="radio" name="vlan" value="16-bit FCS" title="Single Vlan" >
-                          <input type="radio" name="vlan" value="32-bit FCS" title="Double Vlan" >
+                          <input type="radio" name="havevlan" lay-filter="havevlan" value="no" title="No Vlan" checked>
+                          <input type="radio" name="havevlan" lay-filter="havevlan" value="svlan" title="Single Vlan" >
+                          <input type="radio" name="havevlan" lay-filter="havevlan" value="dvlan FCS" title="Double Vlan" >
                         </div>
                       </div>
-                      
-                      <div class="layui-form-item">
+                      <div id="p_vlan">
+                        <div class="layui-form-item">
+                           <div class="layui-inline">
+                             <label class="layui-form-label">Type</label>
+                            <div class="layui-input-block">
+                              <select name="svlantype" id="svlantype" lay-verify="required">
+                                  <option value="0x8100">0x8100</option>
+                                  <option value="0x88a8">0x88a8</option>
+                                  <option value="0x9100">0x9100</option>
+                                  <option value="0x9200">0x9200</option>
+                                </select>
+                            </div>
+                           </div>
+                           <div class="layui-inline">
+                             <label class="layui-form-label">vlan</label>
+                            <div class="layui-input-block">
+                               <input type="text" id="svlan" style="width: 150px;" value="1" name="svlan" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                           </div>
+                        </div>
+                        <div class="layui-form-item">
+                           <div class="layui-inline">
+                             <label class="layui-form-label">Pri</label>
+                            <div class="layui-input-block">
+                              <select name="svlanpri" id="svlanpri" lay-verify="required">
+                                  <option value="0">0(Best Effort)</option>
+                                  <option value="1">1(Background)</option>
+                                  <option value="2">2(Spare)</option>
+                                  <option value="3">3(Excellent Effort)</option>
+                                  <option value="4">4(Controlled Load)</option>
+                                  <option value="5">5(Video,小于100ms latency)</option>
+                                  <option value="6">6(Video,小于10ms latency)</option>
+                                  <option value="7">7(Network Control)</option>
+                                </select>
+                            </div>
+                           </div>
+                           <div class="layui-inline">
+                             <label class="layui-form-label">CFI</label>
+                            <div class="layui-input-block">
+                              <select name="svlancfi" id="svlancfi" lay-verify="required">
+                                  <option value="0">0(Canonical)</option>
+                                  <option value="1">1(non-canonica)</option>
+                                </select>
+                            </div>
+                           </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                           <div class="layui-inline">
+                             <label class="layui-form-label">ACTION</label>
+                            <div class="layui-input-block">
+                              <select name="svlanaction"  id="svlanaction" lay-verify="required">
+                                  <option value="Fixed">Fixed</option>
+                                  <option value="Increase">Increase</option>
+                                  <option value="Increase">Decrease</option>
+                                </select>
+                            </div>
+                           </div>
+                        </div>
+                        <div class="layui-form-item" >
+                         <div class="layui-inline">
+                            <label class="layui-form-label">Num</label>
+                            <div class="layui-input-block">
+                              <input type="text" id="svlannum" style="width: 150px;"  name="svlannum" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                          </div>
+                           <div class="layui-inline">
+                             <label class="layui-form-label">Loop</label>
+                            <div class="layui-input-block">
+                              <input type="text" style="width: 150px;" value="0" id="svlanloop" name="svlanloop" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                           </div>
+                        </div>
+                      </div>
+                        <div class="layui-form-item" style="margin-top: 20px;">
                          <div class="layui-inline">
                            <label class="layui-form-label">Type</label>
                           <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
+                            <select name="dvlantype" id="dvlantype" lay-verify="required">
+                                <option value="0x8100">0x8100</option>
+                                <option value="0x88a8">0x88a8</option>
+                                <option value="0x9100">0x9100</option>
+                                <option value="0x9200">0x9200</option>
                               </select>
                           </div>
                          </div>
                          <div class="layui-inline">
                            <label class="layui-form-label">vlan</label>
                           <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
-                              </select>
+                             <input type="text" id="dvlan" style="width: 150px;" value="1" name="dvlan" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                          </div>
                       </div>
+
                       <div class="layui-form-item">
                          <div class="layui-inline">
                            <label class="layui-form-label">Pri</label>
                           <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
+                            <select name="dvlanpri" id="dvlanpri" lay-verify="required">
+                                <option value="0">0(Best Effort)</option>
+                                <option value="1">1(Background)</option>
+                                <option value="2">2(Spare)</option>
+                                <option value="3">3(Excellent Effort)</option>
+                                <option value="4">4(Controlled Load)</option>
+                                <option value="5">5(Video,小于100ms latency)</option>
+                                <option value="6">6(Video,小于10ms latency)</option>
+                                <option value="7">7(Network Control)</option>
                               </select>
                           </div>
                          </div>
                          <div class="layui-inline">
                            <label class="layui-form-label">CFI</label>
                           <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
+                            <select name="dvlancfi" id="dvlancfi" lay-verify="required">
+                                <option value="0">0(Canonical)</option>
+                                <option value="1">1(non-canonica)</option>
                               </select>
                           </div>
                          </div>
@@ -218,7 +302,7 @@
                          <div class="layui-inline">
                            <label class="layui-form-label">ACTION</label>
                           <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
+                            <select name="dvlanaction" id="dvlanaction" lay-verify="required">
                                 <option value="Fixed">Fixed</option>
                                 <option value="Increase">Increase</option>
                                 <option value="Increase">Decrease</option>
@@ -231,86 +315,13 @@
                        <div class="layui-inline">
                           <label class="layui-form-label">Num</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;"value="1" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
+                            <input type="text" style="width: 150px;" value="1" id="dvlannum" name="dvlannum" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                         </div>
                          <div class="layui-inline">
                            <label class="layui-form-label">Loop</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;" value="0" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
-                          </div>
-                         </div>
-                      </div>
-
-                      <div class="layui-form-item" style="margin-top: 20px;">
-                         <div class="layui-inline">
-                           <label class="layui-form-label">Type</label>
-                          <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
-                              </select>
-                          </div>
-                         </div>
-                         <div class="layui-inline">
-                           <label class="layui-form-label">vlan</label>
-                          <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
-                              </select>
-                          </div>
-                         </div>
-                      </div>
-                      <div class="layui-form-item">
-                         <div class="layui-inline">
-                           <label class="layui-form-label">Pri</label>
-                          <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
-                              </select>
-                          </div>
-                         </div>
-                         <div class="layui-inline">
-                           <label class="layui-form-label">CFI</label>
-                          <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
-                              </select>
-                          </div>
-                         </div>
-                      </div>
-
-                      <div class="layui-form-item">
-                         <div class="layui-inline">
-                           <label class="layui-form-label">ACTION</label>
-                          <div class="layui-input-block">
-                            <select name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
-                              </select>
-                          </div>
-                         </div>
-                      </div>
-                      <div class="layui-form-item">
-
-                       <div class="layui-inline">
-                          <label class="layui-form-label">Num</label>
-                          <div class="layui-input-block">
-                            <input type="text" style="width: 150px;"value="1" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
-                          </div>
-                        </div>
-                         <div class="layui-inline">
-                           <label class="layui-form-label">Loop</label>
-                          <div class="layui-input-block">
-                            <input type="text" style="width: 150px;" value="0" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
+                            <input type="text" style="width: 150px;" id="dvlanloop" value="0" name="dvlanloop" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                          </div>
                       </div>
@@ -318,7 +329,7 @@
                          <div class="layui-inline">
                            <label class="layui-form-label">More Vlans</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 300px;" value="0" name="title" required  lay-verify="required" placeholder="请输入目的MAC地址" autocomplete="off" class="layui-input">
+                            <input type="text" style="width: 300px;" id="morevlans" value="0" name="morevlans" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                          </div>
                       </div>
@@ -329,10 +340,9 @@
                        <div class="layui-inline">
                            <label class="layui-form-label" style="padding: 0px 15px;">Type</label>
                           <div class="layui-input-block">
-                            <select  name="city" lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
+                            <select  name="ethtype" id="ethtype" lay-verify="required">
+                                <option value="0x8000">0x8000(IPv4)</option>
+                                <option value="0x0806">0x0806(ARP)</option>
                               </select>
                           </div>
                          </div>
@@ -343,22 +353,117 @@
                       <div class="layui-form-item">
                         <label class="layui-form-label" style="padding: 9px 15px;">FCS</label>
                         <div class="layui-input-block">
-                          <input type="radio" name="sex" value="No FCS" title="No FCS" checked>
-                          <input type="radio" name="sex" value="16-bit FCS" title="16-bit FCS" >
-                          <input type="radio" name="sex" value="32-bit FCS" title="32-bit FCS" >
+                          <input type="radio" name="fcs" value="nofcs" title="No FCS" checked>
+                          <input type="radio" name="fcs" value="16fcs" title="16-bit FCS" >
+                          <input type="radio" name="fcs" value="32fcs" title="32-bit FCS" >
                         </div>
                       </div>
+              </form>
             </div>
         </div>
         <div style="position: absolute;bottom: 20px;right: 20px;">
             <button class="layui-btn layui-btn-warm" onclick="step2();">下一步</button>
-            <button class="layui-btn" onclick="closeWin();">保存</button>
+            <button class="layui-btn" onclick="save();">保存</button>
         </div>
         <script type="text/javascript" src="/static/js/layui.js"></script>
         <script type="text/javascript">
         layui.use('form', function(){
           var form = layui.form();
+          var dmacaction = '{{eth.dmacaction}}';
+          if (dmacaction=="Fixed"){
+              $("#dmacnum").attr("disabled","false").css("background","#edeff3");
+              $("#dmacloop").attr("disabled","false").css("background","#edeff3");
+              $("#dmacnum").val("0");
+              $("#dmacloop").val("0");
+              form.render();
+          }
+          var smacaction = '{{eth.smacaction}}';
+          if (smacaction=="Fixed"){
+              $("#smacnum").attr("disabled","false").css("background","#edeff3");
+              $("#smacloop").attr("disabled","false").css("background","#edeff3");
+              $("#smacnum").val("0");
+              $("#smacloop").val("0");
+              form.render();
+          }
+          form.on("select(dmacaction)",function(data){
+            if (data.value=="Fixed") {
+              $("#dmacnum").attr("disabled","false").css("background","#edeff3");
+              $("#dmacloop").attr("disabled","false").css("background","#edeff3");
+              $("#dmacnum").val("0");
+              $("#dmacloop").val("0");
+              form.render();
+            }else{
+              $("#dmacnum").removeAttr("disabled").css("background","#fff");
+              $("#dmacloop").removeAttr("disabled").css("background","#fff");
+            }
+          });
+          form.on("select(smacaction)",function(data){
+            if (data.value=="Fixed") {
+              $("#smacnum").attr("disabled","false").css("background","#edeff3");
+              $("#smacloop").attr("disabled","false").css("background","#edeff3");
+              $("#smacnum").val("0");
+              $("#smacloop").val("0");
+              form.render();
+            }else{
+              $("#smacnum").removeAttr("disabled").css("background","#fff");
+              $("#smacloop").removeAttr("disabled").css("background","#fff");
+            }
+          });
+
+          form.on("radio(havevlan)",function(data){
+            if (data.value=="no") {
+              var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop","dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop"];
+              for (var i = arr.length - 1; i >= 0; i--) {
+                $("#"+arr[i]).attr("disabled","false").css("background","#edeff3");
+              }
+            }else if (data.value=="svlan") {
+              var arr = ["dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop"];
+              for (var i = arr.length - 1; i >= 0; i--) {
+                $("#"+arr[i]).attr("disabled","false").css("background","#edeff3");
+              }
+              var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop"];
+              for (var i = arr.length - 1; i >= 0; i--) {
+                $("#"+arr[i]).removeAttr("disabled").css("background","#fff");
+              }
+            }else{
+              var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop","dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop"];
+              for (var i = arr.length - 1; i >= 0; i--) {
+                $("#"+arr[i]).removeAttr("disabled").css("background","#fff");
+              }
+            }
+            form.render();
+            form.render("select");
+          });
         });
+
+          
+        function validateData(){
+            return true;
+        }
+        function save(){ 
+            if (validateData()) {
+                $.ajax({
+                    type:"post",
+                    url:"/app/insertEth",
+                    data: $('form').serialize(),//表单数据
+                    dataType:"json",//json,xml,html,text
+                    success:function(d){
+                        if(d=="success"){
+                            layer.msg('保存成功！');//保存成功提示
+                            // closeWin();
+                            // $(parent.document).find("#iframeParent").attr("src","/app/messageList?name={{message}}");
+                        }
+                        if(d=="error"){
+                            layer.msg('已经存在相同的报文名称!');
+                        }
+                        
+                    }
+                });
+            } 
+        }
+        function smacactiononchange(){
+          alert();
+        }
         parent.a=2;
         function step2() {
             parent.layer.open({

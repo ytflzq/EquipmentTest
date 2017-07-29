@@ -10,7 +10,7 @@ from util import doXml2
 import os
 import json
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+configpacketpath = os.path.join(BASE_DIR, 'data/configpacket.xml')
 
 
 
@@ -21,7 +21,7 @@ def index(request):
     templateFile = "index/index.html"
     interfaces = getInterfaces()
     packetGroups = getPacketGroups()
-    print packetGroups
+    # print packetGroups
     params={"name":name,"interfaces":interfaces,"packetGroups":packetGroups}
     return render_to_response(
         templateFile,
@@ -73,13 +73,13 @@ def uploadFile(request):
 @csrf_exempt
 def insertPacketGroup(request):
     name = request.POST['name']
-    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/configpacket.xml'))
+    tree = doXml2.read_xml(configpacketpath)
     status = "error"
     if name in getPacketGroups():
         return HttpResponse(json.dumps(status, ensure_ascii=False))
     PacketGroup =  createPacketGroupElement(name)
     tree.getroot().append(PacketGroup)
-    tree.write(os.path.join(BASE_DIR, 'data/configpacket.xml'))
+    tree.write(configpacketpath)
     status = "success"
     return HttpResponse(json.dumps(status, ensure_ascii=False))
 
@@ -88,17 +88,49 @@ def insertPacketGroup(request):
 def insertPacket(request):
     name = request.POST['name']
     packetGroupName = request.POST['messageGroupName']
-    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/configpacket.xml'))
+    tree = doXml2.read_xml(configpacketpath)
     status = "error"
-    PacketItem =  createPacketElement(name)
-    print PacketItem
+    
     root = tree.getroot()
+    for PacketGroup in root.findall('./PacketGroup'):
+        if PacketGroup.find("name").text==packetGroupName:
+            for PacketItem in PacketGroup.findall("PacketItems/PacketItem"):
+                if PacketItem.find("name").text==name:
+                    status = "error"
+                    return HttpResponse(json.dumps(status, ensure_ascii=False))
+    PacketItem =  createPacketElement(name)
     for PacketGroup in root.findall('./PacketGroup'):
         if PacketGroup.find("name").text==packetGroupName:
             PacketGroup.find("PacketItems").append(PacketItem)
             status = "success"
-    tree.write(os.path.join(BASE_DIR, 'data/configpacket.xml'))
+    tree.write(configpacketpath)
+    # return HttpResponseRedirect('/app/messageList?name='+packetGroupName)  #跳转到index界面 
+
     return HttpResponse(json.dumps(status, ensure_ascii=False))
+@csrf_exempt
+def insertEth(request):
+    status = saveEth(request.POST)
+    status = "success"
+    return HttpResponse(json.dumps(status, ensure_ascii=False))
+
+def deletePacket(request):
+    name = request.GET['packet']
+    packetGroupName = request.GET['messageGroupName']
+    tree = doXml2.read_xml(configpacketpath)
+    status = "error"
+    root = tree.getroot()
+    for PacketGroup in root.findall('./PacketGroup'):
+        if PacketGroup.find("name").text==packetGroupName:
+            print len(PacketGroup.find("./PacketItems"))
+            for PacketItem in PacketGroup.find("./PacketItems"):
+                print PacketItem
+                if PacketItem.find("name").text == name:
+                    PacketGroup.find("PacketItems").remove(PacketItem)
+                    break
+            break
+    tree.write(configpacketpath)
+    return HttpResponseRedirect('/app/messageList?name='+packetGroupName)  #跳转到index界面 
+
 @csrf_exempt
 def interfaceUpdata(request):
     status = 0
@@ -132,10 +164,9 @@ def rate(request):
 def messageList(request):
     name = request.GET['name']
     result = []
-    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/configpacket.xml'))
+    tree = doXml2.read_xml(configpacketpath)
     root = tree.getroot()
     for PacketGroup in root.findall('./PacketGroup'):
-        
         if PacketGroup.find("name").text==name:
             for PacketItem in PacketGroup.findall("./PacketItems/PacketItem"):
                 data = {}
@@ -146,7 +177,6 @@ def messageList(request):
                 data['length'] = 0
                 data['lostrate'] = PacketItem.find('lostrate').text
                 result.append(data)
-    print result
     templateFile = "message/messageList.html"
     params={"message":name,"list":result}
     return render_to_response(
@@ -182,8 +212,12 @@ def exit(request):
 
 
 def eth(request):
+    packet = request.GET['packet']
+    packetGroupName = request.GET['packetGroupName']
     templateFile = "message/eth.html"
-    params={}
+    eth=getEth(packet,packetGroupName)
+    action = ["Fixed","Increase","Decrease"]
+    params={"packetGroupName":packetGroupName,"packet":packet,"eth":eth,"action":action}
     return render_to_response(
         templateFile,
         params,
@@ -225,7 +259,7 @@ def prepareData(node,ditData):
 
 def getPacketGroups():
     data = []
-    print "read xml",os.path.join(BASE_DIR, 'data/configpacket.xml')
+    print "read xml",configpacketpath
     tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/configpacket.xml'))
     root = tree.getroot()
     for name in root.findall('./PacketGroup/name'):
@@ -263,10 +297,79 @@ def createPacketGroupElement(name):
     return PacketGroup
 
 def createPacketElement(name):
-    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/PacketItem.xml'))
+    tree = doXml2.read_xml(configpacketpath)
     root = tree.getroot()
     PacketItem = root.find('./PacketGroup/PacketItems/PacketItem')
-    PacketItem
     name = doXml2.create_node("name",{},name)
     PacketItem.append(name)
     return PacketItem
+
+def saveEth(dic):
+    print dic
+    tree = doXml2.read_xml(configpacketpath)
+    root = tree.getroot()
+    for PacketGroup in root.findall('./PacketGroup'):
+        if PacketGroup.find("name").text==dic['packetGroupName']:
+            for PacketItem in PacketGroup.findall("./PacketItems/PacketItem"):
+                if PacketItem.find("name").text==dic["packet"]:
+                    #mac
+                    PacketItem.find('items/item/data/smac').text = dic["smac"]
+                    PacketItem.find('items/item/data/dmac').text = dic["dmac"]
+                    if dic["dmacaction"]=="Fixed":
+                        PacketItem.find('items/item/data/dmac').attrib["num"] = "0"
+                        PacketItem.find('items/item/data/dmac').attrib["loop"] = "0"
+                    elif dic["dmacaction"]=="Increase":
+                        PacketItem.find('items/item/data/dmac').attrib["num"] = dic["dmacnum"]
+                        PacketItem.find('items/item/data/dmac').attrib["loop"] = dic["dmacloop"]
+                    else:
+                        PacketItem.find('items/item/data/dmac').attrib["num"] = "-"+dic["dmacnum"]
+                        PacketItem.find('items/item/data/dmac').attrib["loop"] = "-"+dic["dmacloop"]
+                    if dic["smacaction"]=="Fixed":
+                        PacketItem.find('items/item/data/smac').attrib["num"] = "0"
+                        PacketItem.find('items/item/data/smac').attrib["loop"] = "0"
+                    elif dic["smacaction"]=="Increase":
+                        PacketItem.find('items/item/data/smac').attrib["num"] = dic["smacnum"]
+                        PacketItem.find('items/item/data/smac').attrib["loop"] = dic["smacloop"]
+                    else:
+                        PacketItem.find('items/item/data/smac').attrib["num"] = "-"+dic["smacnum"]
+                        PacketItem.find('items/item/data/smac').attrib["loop"] = "-"+dic["smacloop"]
+                    #vlan
+                    if dic["havevlan"]=="no":
+                        PacketItem.find('items/item/data').remove(PacketItem.find('items/item/data/vlans'))
+    tree.write(configpacketpath)
+    status = "success"
+    pass
+def getEth(packet,packetGroupName):
+    eth={}
+    tree = doXml2.read_xml(configpacketpath)
+    root = tree.getroot()
+    for PacketGroup in root.findall('./PacketGroup'):
+        if PacketGroup.find("name").text==packetGroupName:
+            for PacketItem in PacketGroup.findall("./PacketItems/PacketItem"):
+                if PacketItem.find("name").text==packet:
+                    print 1
+                    eth["dmac"] = PacketItem.find('items/item/data/dmac').text == "" and "7A:7A:C0:A8:C8:01" or PacketItem.find('items/item/data/dmac').text
+                    eth["dmacnum"] = PacketItem.find('items/item/data/dmac').attrib['num']
+                    eth["dmacloop"] = PacketItem.find('items/item/data/dmac').attrib['loop']
+                    if int(eth['dmacnum'])==0 and int(eth['dmacloop'])==0:
+                        eth["dmacaction"] = "Fixed"
+                    elif int(eth['dmacnum']) > 0:
+                        eth["dmacaction"] = "Increase"
+                    else:
+                        eth["dmacaction"] = "Decrease"
+                    eth["dmacnum"] = abs(int(eth["dmacnum"]))
+                    eth["dmacloop"] = abs(int(eth["dmacloop"]))
+
+                    eth["smac"] = PacketItem.find('items/item/data/smac').text == "" and "7A:7A:C0:A8:C8:01" or PacketItem.find('items/item/data/smac').text
+                    eth["smacnum"] = PacketItem.find('items/item/data/smac').attrib['num']
+                    eth["smacloop"] = PacketItem.find('items/item/data/smac').attrib['loop']
+                    if int(eth['smacnum'])==0 and int(eth['smacloop'])==0:
+                        eth["smacaction"] = "Fixed"
+                    elif int(eth['smacnum']) > 0:
+                        eth["smacaction"] = "Increase"
+                    else:
+                        eth["smacaction"] = "Decrease"
+                    eth["smacnum"] = abs(int(eth["smacnum"]))
+                    eth["smacloop"] = abs(int(eth["smacloop"]))
+    print eth
+    return eth

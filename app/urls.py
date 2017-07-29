@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^insertPacketGroup$', views.insertPacketGroup),
     
     url(r'^insertMessage$', views.insertPacket),
+    url(r'^insertEth$', views.insertEth),
+    url(r'^deletePacket$', views.deletePacket),
     url(r'^messageList$', views.messageList),
     url(r'^importFile$', views.importFile),
     url(r'^uploadFile$', views.uploadFile),
