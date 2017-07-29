@@ -9,12 +9,59 @@
             .row{
                 margin-left: 0px;
             }
+            .tools{
+                top: 30px;
+                width: 100%;
+                height: 30px;
+                background-color: #FBD1D1;
+            }
+            .tool{
+                margin: 0;
+                padding: 0;
+                margin-right: 10px;
+                float: right;
+                width: 30px;
+                height: 30px;
+            }
+            .tool>img{
+                margin-top: 9px;
+                margin-left: 8px;
+                width: 12px;
+                height: 12px;
+                cursor: pointer;
+            }
+            .toollast{
+                margin: 0;
+                padding: 0;
+                margin-right: 150px;
+                float: right;
+                width: 30px;
+                height: 30px;
+            }
+            .toolTitle{
+                margin: 0;
+                padding: 0;
+                margin-left: 10px;
+                float: left;
+                width: 140px;
+                height: 30px;
+                font-size: 14px;
+                line-height: 30px;
+            }
         </style>
     </head>
     <body style="width: 100%;padding: 0;margin:0 ">
         <div class="container-fuild">
             <div class="row">
-                <div class="col-md-6"">
+                <div class="tools">
+                    <div class="toolTitle">接口名:{{interface}}</div>
+                    <div class="tool" title="配置接口"><img onclick="configInterfaceOption('{{interface}}');" src="/static/img/start.png"></div>
+                    <!-- <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div> -->
+                    <div class="toollast"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
                         <div id = "gauge" style="height:300px;">
                             你的浏览器不支持html5
                         </div>
@@ -64,18 +111,11 @@
             <div></div>
         </div>
         <script type="text/javascript">
+
         var gaugeOption =  {
             tooltip : {
-                formatter: "{a} <br/>{b} : {c}%"
+                formatter: "{a} <br/>{b}:{c}%"
             },
-            // toolbox: {
-            //     show : true,
-            //     feature : {
-            //         mark : {show: true},
-            //         restore : {show: true},
-            //         saveAsImage : {show: true}
-            //     }
-            // },
             series : [
                 {
                     name:'业务指标',
@@ -250,6 +290,19 @@
             lineOption.series[0].data = data;
             lineChart.setOption(lineOption, true);
         },2000);
+        function configInterfaceOption(interface){
+            parent.layer.open({
+              type: 2,
+              title: '配置接口',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              btnAlign: 'c',
+              closeBtn:2,
+              area: ['500px', '400px'],
+              offset: ['200px'],
+              content: '/app/interfaceEdit?name='+interface //iframe的url
+            }); 
+        }
         </script>
     </body> 
 </html>

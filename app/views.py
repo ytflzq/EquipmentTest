@@ -154,8 +154,9 @@ def interfaceUpdata(request):
 
 
 def rate(request):
+    interface = request.GET['name']
     templateFile = "index/rate.html"
-    params={}
+    params={"interface":interface}
     return render_to_response(
         templateFile,
         params,
