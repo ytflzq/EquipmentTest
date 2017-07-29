@@ -17,7 +17,7 @@
                             <smac loop="-3" num="-2" type="mac">123</smac>
                             <ethtype>
                                 <type>ethernetii</type>
-                                <value length="2" type="int">0x0806</value>
+                                <value length="2" type="int">0x8000</value>
                             </ethtype>
                             <fcs length="0" type="int" />
                             <vlans>
@@ -37,7 +37,7 @@
                         <id length="12" type="bit">0</id>
                     </data>
                 </vlan>
-                <morevlans length="3" type="str">435</morevlans>
+                <morevlans length="3" type="str">34</morevlans>
             </vlans>
             </data>
                         <tail>0</tail>

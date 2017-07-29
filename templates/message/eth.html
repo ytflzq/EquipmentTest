@@ -232,7 +232,7 @@
                            <div class="layui-inline">
                              <label class="layui-form-label">ACTION</label>
                             <div class="layui-input-block">
-                              <select name="svlanaction"  id="svlanaction" lay-verify="required">
+                              <select name="svlanaction" lay-filter="svlanaction"  id="svlanaction" lay-verify="required">
                                   <option value="Fixed">Fixed</option>
                                   <option value="Increase">Increase</option>
                                   <option value="Increase">Decrease</option>
@@ -306,7 +306,7 @@
                          <div class="layui-inline">
                            <label class="layui-form-label">ACTION</label>
                           <div class="layui-input-block">
-                            <select name="dvlanaction" id="dvlanaction" lay-verify="required">
+                            <select name="dvlanaction" lay-filter="dvlanaction" id="dvlanaction"  lay-verify="required">
                                 <option value="Fixed">Fixed</option>
                                 <option value="Increase">Increase</option>
                                 <option value="Increase">Decrease</option>
@@ -445,12 +445,12 @@
           form.render("select");
           form.on("radio(havevlan)",function(data){
             if (data.value=="no") {
-              var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop","dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop"];
+              var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop","dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop","morevlans"];
               for (var i = arr.length - 1; i >= 0; i--) {
                 $("#"+arr[i]).attr("disabled","false").css("background","#edeff3");
               }
             }else if (data.value=="svlan") {
-              var arr = ["dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop"];
+              var arr = ["dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop","morevlans"];
               for (var i = arr.length - 1; i >= 0; i--) {
                 $("#"+arr[i]).attr("disabled","false").css("background","#edeff3");
               }
@@ -459,13 +459,38 @@
                 $("#"+arr[i]).removeAttr("disabled").css("background","#fff");
               }
             }else{
-              var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop","dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop"];
+              var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop","dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop","morevlans"];
               for (var i = arr.length - 1; i >= 0; i--) {
                 $("#"+arr[i]).removeAttr("disabled").css("background","#fff");
               }
             }
             form.render();
             form.render("select");
+          });
+
+          form.on("select(svlanaction)",function(data){
+            if (data.value=="Fixed") {
+              $("#svlannum").attr("disabled","false").css("background","#edeff3");
+              $("#svlanloop").attr("disabled","false").css("background","#edeff3");
+              $("#svlannum").val("0");
+              $("#svlanloop").val("0");
+              form.render();
+            }else{
+              $("#svlannum").removeAttr("disabled").css("background","#fff");
+              $("#svlanloop").removeAttr("disabled").css("background","#fff");
+            }
+          });
+          form.on("select(dvlanaction)",function(data){
+            if (data.value=="Fixed") {
+              $("#dvlannum").attr("disabled","false").css("background","#edeff3");
+              $("#dvlanloop").attr("disabled","false").css("background","#edeff3");
+              $("#dvlannum").val("0");
+              $("#dvlanloop").val("0");
+              form.render();
+            }else{
+              $("#dvlannum").removeAttr("disabled").css("background","#fff");
+              $("#dvlanloop").removeAttr("disabled").css("background","#fff");
+            }
           });
         });
 
