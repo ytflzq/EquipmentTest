@@ -11,6 +11,7 @@ import os
 import json
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 configpacketpath = os.path.join(BASE_DIR, 'data/configpacket.xml')
+demopath = os.path.join(BASE_DIR, 'data/demo.xml')
 
 
 
@@ -308,7 +309,7 @@ def createPacketGroupElement(name):
     return PacketGroup
 
 def createPacketElement(name):
-    tree = doXml2.read_xml(configpacketpath)
+    tree = doXml2.read_xml(demopath)
     root = tree.getroot()
     PacketItem = root.find('./PacketGroup/PacketItems/PacketItem')
     name = doXml2.create_node("name",{},name)
@@ -348,7 +349,7 @@ def saveEth(dic):
                     for vlans in PacketItem.findall('items/item/data/vlans'):
                         PacketItem.find('items/item/data').remove(vlans)
                     vlans = creaeVlanNode(dic)
-                    # PacketItem.find('items/item/data').append(vlans)
+                    PacketItem.find('items/item/data').append(vlans)
                     #type
                     PacketItem.find('items/item/data/ethtype/value').text = dic["ethtype"]
                     PacketItem.find('items/item/data/ethtype/value').text = dic["ethtype"]
@@ -396,19 +397,19 @@ def getEth(packet,packetGroupName):
                             eth["havevlan"] = "svlan"
                         else:
                             eth["havevlan"] = "dvlan"
+                            eth["morevlans"] = PacketItem.find('items/item/data/vlans/morevlans').text
                     
                     #type
                     eth["ethtype"] =PacketItem.find('items/item/data/ethtype/value').text
     print eth
     return eth
 def creaeVlanNode(dic):
-    # tree = doXml2.read_xml(configpacketpath)
-    # root = tree.getroot()
-    # vlanss = root.findall('./PacketGroup/PacketItems/vlans')
-    # for x in vlanss:
-    #     if x.attrib['id']==dic["havevlan"]:
-    #         vlans = x
-    #         break 
-    # name = doXml2.create_node("name",{},name)
-    # PacketItem.append(name)
-    pass
+    tree = doXml2.read_xml(demopath)
+    root = tree.getroot()
+    vlanss = root.findall('./PacketGroup/PacketItems/vlans')
+    if dic["havevlan"]=="dvlan":
+        vlans = vlanss[0]
+        vlans.find("./morevlans").text = dic["morevlans"]
+    else:
+        vlans = vlanss[1]
+    return vlans

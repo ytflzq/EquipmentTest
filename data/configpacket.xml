@@ -20,7 +20,7 @@
                                 <value length="2" type="int">0x0806</value>
                             </ethtype>
                             <fcs length="0" type="int" />
-                            <vlans id="dvlan">
+                            <vlans>
                 <vlan>
                     <type length="2" type="int">0x88a8</type>
                     <data bits="12" length="2" loop="0" num="1" type="combo">
@@ -29,8 +29,17 @@
                         <id length="12" type="bit">0</id>
                     </data>
                 </vlan>
+                <vlan>
+                    <type length="2" type="int">0x8100</type>
+                    <data bits="12" length="2" loop="0" num="0" type="combo">
+                        <pri length="3" type="bit">0</pri>
+                        <cfi length="1" type="bit">0</cfi>
+                        <id length="12" type="bit">0</id>
+                    </data>
+                </vlan>
+                <morevlans length="3" type="str">435</morevlans>
             </vlans>
-                        </data>
+            </data>
                         <tail>0</tail>
                         <flags>0</flags>
                         <extradata>000000000100000000000000</extradata>
@@ -39,7 +48,7 @@
                         <offset2>0</offset2>
                     </item>
                 </items>
-            <name>123</name></PacketItem>
+            <name>123</name><name>12333</name></PacketItem>
         </PacketItems>
     </PacketGroup>
 </PacketGroups>

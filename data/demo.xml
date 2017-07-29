@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<PacketGroups version="1.2.0">
+    <PacketGroup>
+        <name>test11group</name>
+        <interval>1000</interval>
+        <cntperitval>1</cntperitval>
+        <loopcount>0</loopcount>
+        <incdec>true</incdec>
+        <PacketItems>
+            <PacketItem>
+                <count>0</count>
+                <lostrate>0%</lostrate>
+                <items>
+                    <item>
+                        <protocol>0</protocol>
+                        <data type="auto">
+                            <dmac type="mac" num="0" loop="0">7A:7A:C0:A8:C8:01</dmac>
+                            <smac type="mac" num="0" loop="0">00:00:00:00:00:33</smac>
+                            <ethtype>
+                                <type>ethernetii</type>
+                                <value type="int" length="2">0x0800</value>
+                            </ethtype>
+                            <fcs type="int" length="0"></fcs>
+                        </data>
+                        <tail>0</tail>
+                        <flags>0</flags>
+                        <extradata>000000000100000000000000</extradata>
+                        <layer>2</layer>
+                        <offset>0</offset>
+                        <offset2>0</offset2>
+                    </item>
+                </items>
+            </PacketItem>
+            <vlans>
+                <vlan>
+                    <type type="int" length="2">0x88a8</type>
+                    <data type="combo" length="2" num="1" loop="0" bits="12">
+                        <pri type="bit" length="3">0</pri>
+                        <cfi type="bit" length="1">0</cfi>
+                        <id type="bit" length="12">0</id>
+                    </data>
+                </vlan>
+                <vlan>
+                    <type type="int" length="2">0x8100</type>
+                    <data type="combo" length="2" num="0" loop="0" bits="12">
+                        <pri type="bit" length="3">0</pri>
+                        <cfi type="bit" length="1">0</cfi>
+                        <id type="bit" length="12">0</id>
+                    </data>
+                </vlan>
+                <morevlans type="str" length="3">ert</morevlans>
+            </vlans>
+            <vlans>
+                <vlan>
+                    <type type="int" length="2">0x88a8</type>
+                    <data type="combo" length="2" num="1" loop="0" bits="12">
+                        <pri type="bit" length="3">0</pri>
+                        <cfi type="bit" length="1">0</cfi>
+                        <id type="bit" length="12">0</id>
+                    </data>
+                </vlan>
+            </vlans>
+        </PacketItems>
+    </PacketGroup>
+</PacketGroups>
