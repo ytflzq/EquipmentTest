@@ -172,9 +172,13 @@
                       <div class="layui-form-item">
                         <label class="layui-form-label" style="padding: 9px 15px;">Vlan</label>
                         <div class="layui-input-block">
-                          <input type="radio" name="havevlan" lay-filter="havevlan" value="no" title="No Vlan" checked>
-                          <input type="radio" name="havevlan" lay-filter="havevlan" value="svlan" title="Single Vlan" >
-                          <input type="radio" name="havevlan" lay-filter="havevlan" value="dvlan FCS" title="Double Vlan" >
+                        {% for mes in havevlan %}
+                          {% ifequal eth.havevlan mes.key %}
+                          <input type="radio" name="havevlan" lay-filter="havevlan" value="{{mes.key}}" title="{{mes.text}}" checked>
+                          {% else %}
+                          <input type="radio" name="havevlan" lay-filter="havevlan" value="{{mes.key}}" title="{{mes.text}}" >
+                          {% endifequal  %}
+                        {% endfor %}
                         </div>
                       </div>
                       <div id="p_vlan">
@@ -334,15 +338,21 @@
                          </div>
                       </div>
                       <fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
-                          <legend>Type And FCS</legend>
+                          <!-- <legend>Type And FCS</legend> -->
+                          <legend>Type</legend>
                       </fieldset>
                       <div class="layui-form-item">
                        <div class="layui-inline">
                            <label class="layui-form-label" style="padding: 0px 15px;">Type</label>
                           <div class="layui-input-block">
                             <select  name="ethtype" id="ethtype" lay-verify="required">
-                                <option value="0x8000">0x8000(IPv4)</option>
-                                <option value="0x0806">0x0806(ARP)</option>
+                                {% ifequal eth.ethtype '0x8000'%}
+                                <option value="0x8000" selected>0x8000(IPv4)</option>
+                                <option value="0x0806" >0x0806(ARP)</option>
+                                {%else%}
+                                <option value="0x8000" >0x8000(IPv4)</option>
+                                <option value="0x0806" selected>0x0806(ARP)</option>
+                                {%endifequal%}
                               </select>
                           </div>
                          </div>
@@ -350,14 +360,14 @@
 <!--                       <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                           <legend>FCS</legend>
                       </fieldset> -->
-                      <div class="layui-form-item">
+                      <!-- <div class="layui-form-item">
                         <label class="layui-form-label" style="padding: 9px 15px;">FCS</label>
                         <div class="layui-input-block">
                           <input type="radio" name="fcs" value="nofcs" title="No FCS" checked>
                           <input type="radio" name="fcs" value="16fcs" title="16-bit FCS" >
                           <input type="radio" name="fcs" value="32fcs" title="32-bit FCS" >
                         </div>
-                      </div>
+                      </div> -->
               </form>
             </div>
         </div>
@@ -385,6 +395,7 @@
               $("#smacloop").val("0");
               form.render();
           }
+
           form.on("select(dmacaction)",function(data){
             if (data.value=="Fixed") {
               $("#dmacnum").attr("disabled","false").css("background","#edeff3");
@@ -409,7 +420,29 @@
               $("#smacloop").removeAttr("disabled").css("background","#fff");
             }
           });
-
+          var havevlan = '{{eth.havevlan}}';
+          if (havevlan=="no") {
+            var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop","dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop","morevlans"];
+            for (var i = arr.length - 1; i >= 0; i--) {
+              $("#"+arr[i]).attr("disabled","false").css("background","#edeff3");
+            }
+          }else if (havevlan=="svlan") {
+            var arr = ["dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop","morevlans"];
+            for (var i = arr.length - 1; i >= 0; i--) {
+              $("#"+arr[i]).attr("disabled","false").css("background","#edeff3");
+            }
+            var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop"];
+            for (var i = arr.length - 1; i >= 0; i--) {
+              $("#"+arr[i]).removeAttr("disabled").css("background","#fff");
+            }
+          }else{
+            var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop","dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop","morevlans"];
+            for (var i = arr.length - 1; i >= 0; i--) {
+              $("#"+arr[i]).removeAttr("disabled").css("background","#fff");
+            }
+          }
+          form.render();
+          form.render("select");
           form.on("radio(havevlan)",function(data){
             if (data.value=="no") {
               var arr = ["svlantype","svlan","svlanpri","svlancfi","svlanaction","svlannum","svlanloop","dvlantype","dvlan","dvlanpri","dvlancfi","dvlanaction","dvlannum","dvlanloop"];

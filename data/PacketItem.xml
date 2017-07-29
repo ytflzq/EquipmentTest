@@ -31,6 +31,35 @@
                     </item>
                 </items>
             </PacketItem>
+            <vlans id="dvlan">
+                <vlan>
+                    <type type="int" length="2">0x88a8</type>
+                    <data type="combo" length="2" num="1" loop="0" bits="12">
+                        <pri type="bit" length="3">0</pri>
+                        <cfi type="bit" length="1">0</cfi>
+                        <id type="bit" length="12">0</id>
+                    </data>
+                </vlan>
+                <vlan>
+                    <type type="int" length="2">0x8100</type>
+                    <data type="combo" length="2" num="0" loop="0" bits="12">
+                        <pri type="bit" length="3">0</pri>
+                        <cfi type="bit" length="1">0</cfi>
+                        <id type="bit" length="12">0</id>
+                    </data>
+                </vlan>
+                <morevlans type="str" length="3">ert</morevlans>
+            </vlans>
+            <vlans id="svlan">
+                <vlan>
+                    <type type="int" length="2">0x88a8</type>
+                    <data type="combo" length="2" num="1" loop="0" bits="12">
+                        <pri type="bit" length="3">0</pri>
+                        <cfi type="bit" length="1">0</cfi>
+                        <id type="bit" length="12">0</id>
+                    </data>
+                </vlan>
+            </vlans>
         </PacketItems>
     </PacketGroup>
 </PacketGroups>

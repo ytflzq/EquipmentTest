@@ -121,15 +121,24 @@ def deletePacket(request):
     root = tree.getroot()
     for PacketGroup in root.findall('./PacketGroup'):
         if PacketGroup.find("name").text==packetGroupName:
-            print len(PacketGroup.find("./PacketItems"))
             for PacketItem in PacketGroup.find("./PacketItems"):
-                print PacketItem
                 if PacketItem.find("name").text == name:
                     PacketGroup.find("PacketItems").remove(PacketItem)
                     break
             break
     tree.write(configpacketpath)
     return HttpResponseRedirect('/app/messageList?name='+packetGroupName)  #跳转到index界面 
+def deletePacketGroup(request):
+    packetGroupName = request.GET['messageGroupName']
+    tree = doXml2.read_xml(configpacketpath)
+    status = "error"
+    root = tree.getroot()
+    for PacketGroup in root.findall('./PacketGroup'):
+        if PacketGroup.find("name").text==packetGroupName:
+            root.remove(PacketGroup)
+            break
+    tree.write(configpacketpath)
+    return HttpResponseRedirect('/app')  #跳转到index界面 
 
 @csrf_exempt
 def interfaceUpdata(request):
@@ -218,7 +227,8 @@ def eth(request):
     templateFile = "message/eth.html"
     eth=getEth(packet,packetGroupName)
     action = ["Fixed","Increase","Decrease"]
-    params={"packetGroupName":packetGroupName,"packet":packet,"eth":eth,"action":action}
+    havevlan =[{"key":"no","text":"No Vlan"},{"key":"svlan","text":"Single Vlan"},{"key":"dvlan","text":"Double Vlan"}]
+    params={"packetGroupName":packetGroupName,"packet":packet,"eth":eth,"action":action,"havevlan":havevlan}
     return render_to_response(
         templateFile,
         params,
@@ -335,8 +345,13 @@ def saveEth(dic):
                         PacketItem.find('items/item/data/smac').attrib["num"] = "-"+dic["smacnum"]
                         PacketItem.find('items/item/data/smac').attrib["loop"] = "-"+dic["smacloop"]
                     #vlan
-                    if dic["havevlan"]=="no":
-                        PacketItem.find('items/item/data').remove(PacketItem.find('items/item/data/vlans'))
+                    for vlans in PacketItem.findall('items/item/data/vlans'):
+                        PacketItem.find('items/item/data').remove(vlans)
+                    vlans = creaeVlanNode(dic)
+                    # PacketItem.find('items/item/data').append(vlans)
+                    #type
+                    PacketItem.find('items/item/data/ethtype/value').text = dic["ethtype"]
+                    PacketItem.find('items/item/data/ethtype/value').text = dic["ethtype"]
     tree.write(configpacketpath)
     status = "success"
     pass
@@ -348,7 +363,7 @@ def getEth(packet,packetGroupName):
         if PacketGroup.find("name").text==packetGroupName:
             for PacketItem in PacketGroup.findall("./PacketItems/PacketItem"):
                 if PacketItem.find("name").text==packet:
-                    print 1
+                    #mac
                     eth["dmac"] = PacketItem.find('items/item/data/dmac').text == "" and "7A:7A:C0:A8:C8:01" or PacketItem.find('items/item/data/dmac').text
                     eth["dmacnum"] = PacketItem.find('items/item/data/dmac').attrib['num']
                     eth["dmacloop"] = PacketItem.find('items/item/data/dmac').attrib['loop']
@@ -372,5 +387,28 @@ def getEth(packet,packetGroupName):
                         eth["smacaction"] = "Decrease"
                     eth["smacnum"] = abs(int(eth["smacnum"]))
                     eth["smacloop"] = abs(int(eth["smacloop"]))
+
+                    #vlan
+                    if len(PacketItem.findall('items/item/data/vlans'))==0:
+                        eth["havevlan"] = "no"
+                    else:
+                        if len(PacketItem.findall('items/item/data/vlans/vlan'))==1:
+                            eth["havevlan"] = "svlan"
+                        else:
+                            eth["havevlan"] = "dvlan"
+                    
+                    #type
+                    eth["ethtype"] =PacketItem.find('items/item/data/ethtype/value').text
     print eth
     return eth
+def creaeVlanNode(dic):
+    # tree = doXml2.read_xml(configpacketpath)
+    # root = tree.getroot()
+    # vlanss = root.findall('./PacketGroup/PacketItems/vlans')
+    # for x in vlanss:
+    #     if x.attrib['id']==dic["havevlan"]:
+    #         vlans = x
+    #         break 
+    # name = doXml2.create_node("name",{},name)
+    # PacketItem.append(name)
+    pass

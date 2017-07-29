@@ -79,7 +79,7 @@
         <div class="container-fuild">
             <div class="row">
                 <div class="tools">
-                    <div class="toolTitle">报文组名:{{message}}<img onclick="stopInterface();" title="删除报文组" src="/static/img/delete.png"></div>
+                    <div class="toolTitle">报文组名:{{message}}<img onclick="deletepacketGroup();" title="删除报文组" src="/static/img/delete.png"></div>
                     <div class="toolfrist" title="新建报文"><img onclick="addMessage();" src="/static/img/add.png"></div>
                     <!-- <div class="tool" title="配置"><img onclick="configOption();" src="/static/img/start.png"></div> -->
                     <!-- <div class="tool" title="停止接口"><img onclick="eleteInterface();" src="/static/img/stop.png"></div> -->
@@ -182,6 +182,13 @@
               offset: ['50px'],
               content: "/app/eth?packet="+packet+"&packetGroupName={{message}}" //iframe的url
             }); 
+        }
+        function deletepacketGroup(){
+            parent.layer.confirm('您确定要删除当前报文组配置么？', {area: ['400px', '190px'],offset: ['200px'],icon: 3, title:'提示'}, function(index){
+            parent.location = "/app/deletePacketGroup?messageGroupName={{message}}";
+            // $(parent).find("#iframeParent").attr("src","aaa");
+            parent.layer.close(index);
+          });
         }
         </script>
     </body> 
