@@ -122,7 +122,7 @@
                          <div class="layui-inline">
                            <label class="layui-form-label">Loop</label>
                           <div class="layui-input-block">
-                            <input type="text" name="dmacloop" style="width: 150px;" id="dmacloop" value="{{eth.dmacloop}}"" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            <input type="text" name="dmacloop" style="width: 150px;" id="dmacloop" value="{{eth.dmacloop}}" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                          </div>
                       </div>
@@ -206,14 +206,14 @@
                              <label class="layui-form-label">Pri</label>
                             <div class="layui-input-block">
                               <select name="svlanpri" id="svlanpri" lay-verify="required">
-                                  <option value="0">0(Best Effort)</option>
-                                  <option value="1">1(Background)</option>
-                                  <option value="2">2(Spare)</option>
-                                  <option value="3">3(Excellent Effort)</option>
-                                  <option value="4">4(Controlled Load)</option>
-                                  <option value="5">5(Video,小于100ms latency)</option>
-                                  <option value="6">6(Video,小于10ms latency)</option>
-                                  <option value="7">7(Network Control)</option>
+                                {% for mes in pri %}
+                                  {% ifequal eth.svlanpri mes.key %}
+                                  <option value="{{mes.key}}" select>{{mes.text}}</option>
+                                  {% else %}
+                                  <option value="{{mes.key}}">{{mes.text}}</option>
+                                  {% endifequal %}
+                                {% endfor %}
+                                  
                                 </select>
                             </div>
                            </div>
@@ -280,14 +280,13 @@
                            <label class="layui-form-label">Pri</label>
                           <div class="layui-input-block">
                             <select name="dvlanpri" id="dvlanpri" lay-verify="required">
-                                <option value="0">0(Best Effort)</option>
-                                <option value="1">1(Background)</option>
-                                <option value="2">2(Spare)</option>
-                                <option value="3">3(Excellent Effort)</option>
-                                <option value="4">4(Controlled Load)</option>
-                                <option value="5">5(Video,小于100ms latency)</option>
-                                <option value="6">6(Video,小于10ms latency)</option>
-                                <option value="7">7(Network Control)</option>
+                                {% for mes in pri %}
+                                  {% ifequal eth.dvlanpri mes.key %}
+                                  <option value="{{mes.key}}" select>{{mes.text}}</option>
+                                  {% else %}
+                                  <option value="{{mes.key}}">{{mes.text}}</option>
+                                  {% endifequal %}
+                                {% endfor %}
                               </select>
                           </div>
                          </div>
