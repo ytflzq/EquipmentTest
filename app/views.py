@@ -229,9 +229,11 @@ def eth(request):
     eth=getEth(packet,packetGroupName)
     action = ["Fixed","Increase","Decrease"]
     havevlan =[{"key":"no","text":"No Vlan"},{"key":"svlan","text":"Single Vlan"},{"key":"dvlan","text":"Double Vlan"}]
-    pri =[{"key":"0","text":"0(Best Effort)"},{"1":"svlan","text":"1(Background)"},{"key":"2","text":"2(Spare)"},{"key":"3","text":"3(Excellent Effort)"},\
+    pri =[{"key":"0","text":"0(Best Effort)"},{"key":"1","text":"1(Background)"},{"key":"2","text":"2(Spare)"},{"key":"3","text":"3(Excellent Effort)"},\
     {"key":"4","text":"4(Controlled Load)"},{"key":"5","text":"5(Video,小于100ms latency)"},{"key":"6","text":"6(Video,小于10ms latency)"},{"key":"7","text":"7(Network Control)"}]
-    params={"packetGroupName":packetGroupName,"packet":packet,"eth":eth,"action":action,"havevlan":havevlan,"pri":pri}
+    vlantype = ["0x8100","0x88a8","0x9100","0x9200"]
+    
+    params={"packetGroupName":packetGroupName,"packet":packet,"eth":eth,"action":action,"havevlan":havevlan,"pri":pri,"vlantype":vlantype}
     return render_to_response(
         templateFile,
         params,
@@ -397,12 +399,57 @@ def getEth(packet,packetGroupName):
                     else:
                         if len(PacketItem.findall('items/item/data/vlans/vlan'))==1:
                             eth["havevlan"] = "svlan"
+                            eth["svlantype"] = PacketItem.find('items/item/data/vlans/vlan/type').text
+                            eth["svlanpri"] = PacketItem.find('items/item/data/vlans/vlan/data/pri').text
+                            eth["svlancfi"] = PacketItem.find('items/item/data/vlans/vlan/data/cfi').text
+                            eth["svlan"] = PacketItem.find('items/item/data/vlans/vlan/data/id').text
+                            eth["svlannum"] = PacketItem.find('items/item/data/vlans/vlan/data').attrib['num']
+                            eth["svlanloop"] = PacketItem.find('items/item/data/vlans/vlan/data').attrib['loop']
+                            if int(eth['svlannum'])==0 and int(eth['svlanloop'])==0:
+                                eth["svlanaction"] = "Fixed"
+                            elif int(eth['svlannum']) > 0:
+                                eth["svlanaction"] = "Increase"
+                            else:
+                                eth["svlanaction"] = "Decrease"
+                            eth["svlannum"] = abs(int(eth["svlannum"]))
+                            eth["svlanloop"] = abs(int(eth["svlanloop"]))
                         else:
                             eth["havevlan"] = "dvlan"
                             eth["morevlans"] = PacketItem.find('items/item/data/vlans/morevlans').text
+
+                            eth["svlantype"] = PacketItem.find('items/item/data/vlans/vlan/type').text
+                            eth["svlanpri"] = PacketItem.find('items/item/data/vlans/vlan/data/pri').text
+                            eth["svlancfi"] = PacketItem.find('items/item/data/vlans/vlan/data/cfi').text
+                            eth["svlan"] = PacketItem.find('items/item/data/vlans/vlan/data/id').text
+                            eth["svlannum"] = PacketItem.find('items/item/data/vlans/vlan/data').attrib['num']
+                            eth["svlanloop"] = PacketItem.find('items/item/data/vlans/vlan/data').attrib['loop']
+                            if int(eth['svlannum'])==0 and int(eth['svlanloop'])==0:
+                                eth["svlanaction"] = "Fixed"
+                            elif int(eth['svlannum']) > 0:
+                                eth["svlanaction"] = "Increase"
+                            else:
+                                eth["svlanaction"] = "Decrease"
+                            eth["svlannum"] = abs(int(eth["svlannum"]))
+                            eth["svlanloop"] = abs(int(eth["svlanloop"]))
+
+                            eth["dvlantype"] = PacketItem.findall('items/item/data/vlans/vlan/type')[1].text
+                            eth["dvlanpri"] = PacketItem.findall('items/item/data/vlans/vlan/data/pri')[1].text
+                            eth["dvlancfi"] = PacketItem.findall('items/item/data/vlans/vlan/data/cfi')[1].text
+                            eth["dvlan"] = PacketItem.findall('items/item/data/vlans/vlan/data/id')[1].text
+                            eth["dvlannum"] = PacketItem.findall('items/item/data/vlans/vlan/data')[1].attrib['num']
+                            eth["dvlanloop"] = PacketItem.findall('items/item/data/vlans/vlan/data')[1].attrib['loop']
+                            if int(eth['dvlannum'])==0 and int(eth['dvlanloop'])==0:
+                                eth["dvlanaction"] = "Fixed"
+                            elif int(eth['dvlannum']) > 0:
+                                eth["dvlanaction"] = "Increase"
+                            else:
+                                eth["dvlanaction"] = "Decrease"
+                            eth["dvlannum"] = abs(int(eth["dvlannum"]))
+                            eth["dvlanloop"] = abs(int(eth["dvlanloop"]))
                     
                     #type
                     eth["ethtype"] =PacketItem.find('items/item/data/ethtype/value').text
+    print "getEth"
     print eth
     return eth
 def creaeVlanNode(dic):
@@ -411,7 +458,6 @@ def creaeVlanNode(dic):
     vlanss = root.findall('./PacketGroup/PacketItems/vlans')
     if dic["havevlan"]=="dvlan":
         vlans = vlanss[0]
-
         vlans.find("./morevlans").text = dic["morevlans"]
         vlans.find("./vlan/type").text = dic['svlantype']
         vlans.find("./vlan/data/pri").text = dic['svlanpri']
@@ -426,20 +472,19 @@ def creaeVlanNode(dic):
         else:
             vlans.find('./vlan/data').attrib["num"] = "-"+dic["svlannum"]
             vlans.find('./vlan/data').attrib["loop"] = "-"+dic["svlanloop"]
-
-        vlans.findall("./vlan/type")[1].text = dic['svlantype']
-        # vlans.findall("./vlan/data/pri").text = dic['svlanpri']
-        # vlans.findall("./vlan/data/cfi").text = dic['svlancfi']
-        # vlans.findall("./vlan/data/id").text = dic['svlan']
-        # if dic["svlanaction"]=="Fixed":
-        #     vlans.findall('./vlan/data').attrib["num"] = "0"
-        #     vlans.findall('./vlan/data').attrib["loop"] = "0"
-        # elif dic["dmacaction"]=="Increase":
-        #     vlans.findall('./vlan/data').attrib["num"] = dic["svlannum"]
-        #     vlans.findall('./vlan/data').attrib["loop"] = dic["svlanloop"]
-        # else:
-        #     vlans.findall('./vlan/data').attrib["num"] = "-"+dic["svlannum"]
-        #     vlans.findall('./vlan/data').attrib["loop"] = "-"+dic["svlanloop"]
+        vlans.findall("./vlan/type")[1].text = dic['dvlantype']
+        vlans.findall("./vlan/data/pri")[1].text = dic['dvlanpri']
+        vlans.findall("./vlan/data/cfi")[1].text = dic['dvlancfi']
+        vlans.findall("./vlan/data/id")[1].text = dic['dvlan']
+        if dic["dvlanaction"]=="Fixed":
+            vlans.findall('./vlan/data')[1].attrib["num"] = "0"
+            vlans.findall('./vlan/data')[1].attrib["loop"] = "0"
+        elif dic["dmacaction"]=="Increase":
+            vlans.findall('./vlan/data')[1].attrib["num"] = dic["dvlannum"]
+            vlans.findall('./vlan/data')[1].attrib["loop"] = dic["dvlanloop"]
+        else:
+            vlans.findall('./vlan/data')[1].attrib["num"] = "-"+dic["dvlannum"]
+            vlans.findall('./vlan/data')[1].attrib["loop"] = "-"+dic["dvlanloop"]
     else:
         vlans = vlanss[1]
         vlans.find("./vlan/type").text = dic['svlantype']
@@ -449,7 +494,7 @@ def creaeVlanNode(dic):
         if dic["svlanaction"]=="Fixed":
             vlans.find('./vlan/data').attrib["num"] = "0"
             vlans.find('./vlan/data').attrib["loop"] = "0"
-        elif dic["dmacaction"]=="Increase":
+        elif dic["smacaction"]=="Increase":
             vlans.find('./vlan/data').attrib["num"] = dic["svlannum"]
             vlans.find('./vlan/data').attrib["loop"] = dic["svlanloop"]
         else:

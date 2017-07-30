@@ -187,17 +187,20 @@
                              <label class="layui-form-label">Type</label>
                             <div class="layui-input-block">
                               <select name="svlantype" id="svlantype" lay-verify="required">
-                                  <option value="0x8100">0x8100</option>
-                                  <option value="0x88a8">0x88a8</option>
-                                  <option value="0x9100">0x9100</option>
-                                  <option value="0x9200">0x9200</option>
+                                {% for mes in vlantype %}
+                                  {% ifequal eth.svlantype mes %}
+                                  <option value="{{mes}}" selected>{{mes}}</option>
+                                  {% else %}
+                                  <option value="{{mes}}">{{mes}}</option>
+                                  {% endifequal  %}
+                                {% endfor %}
                                 </select>
                             </div>
                            </div>
                            <div class="layui-inline">
                              <label class="layui-form-label">vlan</label>
                             <div class="layui-input-block">
-                               <input type="text" id="svlan" style="width: 150px;" value="1" name="svlan" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                               <input type="text" id="svlan" style="width: 150px;" value="{{eth.svlan}}" name="svlan" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                            </div>
                         </div>
@@ -208,12 +211,11 @@
                               <select name="svlanpri" id="svlanpri" lay-verify="required">
                                 {% for mes in pri %}
                                   {% ifequal eth.svlanpri mes.key %}
-                                  <option value="{{mes.key}}" select>{{mes.text}}</option>
+                                  <option value="{{mes.key}}" selected>{{mes.text}}</option>
                                   {% else %}
                                   <option value="{{mes.key}}">{{mes.text}}</option>
                                   {% endifequal %}
                                 {% endfor %}
-                                  
                                 </select>
                             </div>
                            </div>
@@ -221,8 +223,13 @@
                              <label class="layui-form-label">CFI</label>
                             <div class="layui-input-block">
                               <select name="svlancfi" id="svlancfi" lay-verify="required">
-                                  <option value="0">0(Canonical)</option>
+                                {% ifequal eth.svlancfi '0' %}
+                                  <option value="0" selected>0(Canonical)</option>
                                   <option value="1">1(non-canonica)</option>
+                                {% else %}
+                                  <option value="0" >0(Canonical)</option>
+                                  <option value="1" selected>1(non-canonica)</option>
+                                {% endifequal%}
                                 </select>
                             </div>
                            </div>
@@ -233,9 +240,13 @@
                              <label class="layui-form-label">ACTION</label>
                             <div class="layui-input-block">
                               <select name="svlanaction" lay-filter="svlanaction"  id="svlanaction" lay-verify="required">
-                                  <option value="Fixed">Fixed</option>
-                                  <option value="Increase">Increase</option>
-                                  <option value="Increase">Decrease</option>
+                                {% for mes in action %}
+                                  {% ifequal eth.svlanaction mes %}
+                                  <option value="{{mes}}" selected>{{mes}}</option>
+                                  {% else %}
+                                  <option value="{{mes}}">{{mes}}</option>
+                                  {% endifequal  %}
+                                {% endfor %}
                                 </select>
                             </div>
                            </div>
@@ -244,7 +255,7 @@
                          <div class="layui-inline">
                             <label class="layui-form-label">Num</label>
                             <div class="layui-input-block">
-                              <input type="text" id="svlannum" style="width: 150px;"  name="svlannum" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                              <input type="text" id="svlannum" style="width: 150px;"  name="svlannum" value="{{eth.svlannum}}" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                           </div>
                            <div class="layui-inline">
@@ -260,17 +271,20 @@
                            <label class="layui-form-label">Type</label>
                           <div class="layui-input-block">
                             <select name="dvlantype" id="dvlantype" lay-verify="required">
-                                <option value="0x8100">0x8100</option>
-                                <option value="0x88a8">0x88a8</option>
-                                <option value="0x9100">0x9100</option>
-                                <option value="0x9200">0x9200</option>
+                                {% for mes in vlantype %}
+                                  {% ifequal eth.dvlantype mes %}
+                                  <option value="{{mes}}" selected>{{mes}}</option>
+                                  {% else %}
+                                  <option value="{{mes}}">{{mes}}</option>
+                                  {% endifequal  %}
+                                {% endfor %}
                               </select>
                           </div>
                          </div>
                          <div class="layui-inline">
                            <label class="layui-form-label">vlan</label>
                           <div class="layui-input-block">
-                             <input type="text" id="dvlan" style="width: 150px;" value="1" name="dvlan" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                             <input type="text" id="dvlan" style="width: 150px;" value="{{eth.dvlan}}" name="dvlan" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                          </div>
                       </div>
@@ -282,7 +296,7 @@
                             <select name="dvlanpri" id="dvlanpri" lay-verify="required">
                                 {% for mes in pri %}
                                   {% ifequal eth.dvlanpri mes.key %}
-                                  <option value="{{mes.key}}" select>{{mes.text}}</option>
+                                  <option value="{{mes.key}}" selected>{{mes.text}}</option>
                                   {% else %}
                                   <option value="{{mes.key}}">{{mes.text}}</option>
                                   {% endifequal %}
@@ -294,8 +308,13 @@
                            <label class="layui-form-label">CFI</label>
                           <div class="layui-input-block">
                             <select name="dvlancfi" id="dvlancfi" lay-verify="required">
-                                <option value="0">0(Canonical)</option>
-                                <option value="1">1(non-canonica)</option>
+                                {% ifequal eth.dvlancfi '0' %}
+                                  <option value="0" selected>0(Canonical)</option>
+                                  <option value="1">1(non-canonica)</option>
+                                {% else %}
+                                  <option value="0" >0(Canonical)</option>
+                                  <option value="1" selected>1(non-canonica)</option>
+                                {% endifequal%}
                               </select>
                           </div>
                          </div>
@@ -306,9 +325,13 @@
                            <label class="layui-form-label">ACTION</label>
                           <div class="layui-input-block">
                             <select name="dvlanaction" lay-filter="dvlanaction" id="dvlanaction"  lay-verify="required">
-                                <option value="Fixed">Fixed</option>
-                                <option value="Increase">Increase</option>
-                                <option value="Increase">Decrease</option>
+                                {% for mes in action %}
+                                  {% ifequal eth.dvlanaction mes %}
+                                  <option value="{{mes}}" selected>{{mes}}</option>
+                                  {% else %}
+                                  <option value="{{mes}}">{{mes}}</option>
+                                  {% endifequal  %}
+                                {% endfor %}
                               </select>
                           </div>
                          </div>
@@ -318,13 +341,13 @@
                        <div class="layui-inline">
                           <label class="layui-form-label">Num</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;" value="1" id="dvlannum" name="dvlannum" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            <input type="text" style="width: 150px;" value="{{eth.dvlannum}}" id="dvlannum" name="dvlannum" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                         </div>
                          <div class="layui-inline">
                            <label class="layui-form-label">Loop</label>
                           <div class="layui-input-block">
-                            <input type="text" style="width: 150px;" id="dvlanloop" value="0" name="dvlanloop" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            <input type="text" style="width: 150px;" id="dvlanloop" value="{{eth.dvlanloop}}" name="dvlanloop" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                           </div>
                          </div>
                       </div>
@@ -491,6 +514,22 @@
               $("#dvlanloop").removeAttr("disabled").css("background","#fff");
             }
           });
+          var svlanaction = '{{eth.svlanaction}}';
+          if (svlanaction=="Fixed"){
+              $("#svlannum").attr("disabled","false").css("background","#edeff3");
+              $("#svlanloop").attr("disabled","false").css("background","#edeff3");
+              $("#svlannum").val("0");
+              $("#svlanloop").val("0");
+              form.render();
+          }
+          var dvlanaction = '{{eth.dvlanaction}}';
+          if (dvlanaction=="Fixed"){
+              $("#dvlannum").attr("disabled","false").css("background","#edeff3");
+              $("#dvlanloop").attr("disabled","false").css("background","#edeff3");
+              $("#dvlannum").val("0");
+              $("#dvlanloop").val("0");
+              form.render();
+          }
         });
 
           

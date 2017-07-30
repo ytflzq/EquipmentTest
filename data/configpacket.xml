@@ -22,22 +22,22 @@
                             <fcs length="0" type="int" />
                             <vlans>
                 <vlan>
-                    <type length="2" type="int">0x88a8</type>
-                    <data bits="12" length="2" loop="0" num="1" type="combo">
-                        <pri length="3" type="bit">0</pri>
+                    <type length="2" type="int">0x9100</type>
+                    <data bits="12" length="2" loop="0" num="23" type="combo">
+                        <pri length="3" type="bit">1</pri>
                         <cfi length="1" type="bit">0</cfi>
-                        <id length="12" type="bit">0</id>
+                        <id length="12" type="bit">133</id>
                     </data>
                 </vlan>
                 <vlan>
-                    <type length="2" type="int">0x8100</type>
-                    <data bits="12" length="2" loop="0" num="0" type="combo">
-                        <pri length="3" type="bit">0</pri>
-                        <cfi length="1" type="bit">0</cfi>
-                        <id length="12" type="bit">0</id>
+                    <type length="2" type="int">0x88a8</type>
+                    <data bits="12" length="2" loop="45" num="123" type="combo">
+                        <pri length="3" type="bit">4</pri>
+                        <cfi length="1" type="bit">1</cfi>
+                        <id length="12" type="bit">23</id>
                     </data>
                 </vlan>
-                <morevlans length="3" type="str">34</morevlans>
+                <morevlans length="3" type="str">123</morevlans>
             </vlans>
             </data>
                         <tail>0</tail>
