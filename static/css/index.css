@@ -24,7 +24,7 @@ body{
     width: 30px;
     height: 30px;
 }
-.tool>img{
+.tool>a>img{
     margin-top: 9px;
     margin-left: 8px;
     width: 12px;
@@ -83,8 +83,8 @@ body{
 }
 
 .nav_title {
-    height: 40px;
-    line-height: 40px;
+    height: 30px;
+    line-height: 30px;
     cursor: pointer;
     font-size: 13px;
     position: relative;
@@ -96,7 +96,7 @@ body{
     height: 20px;
     width: 20px;
     left: 40px;
-    top: 10px;
+    top: 5px;
 }
 
 .jbsz {

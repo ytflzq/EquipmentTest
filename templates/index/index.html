@@ -33,10 +33,11 @@ $(document).ready(function(){
 <div style="clear: both;"></div>
 <div class="tools">
     <div class="toolTitle">工具栏</div>
-    <div class="tool" title="启动接口"><img onclick="startInterface();" src="/static/img/start.png"></div>
-    <div class="tool" title="停止接口"><img onclick="stopInterface();" src="/static/img/stop.png"></div>
-    <div class="tool" title="新建报文组"><img onclick="addMessage();" src="/static/img/add.png"></div>
-    <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div>
+    <div class="tool" title="配置报文"><a href=" Test://"><img src="/static/img/start.png"></a></div>
+    <!-- <div class="tool" title="启动接口"><img onclick="startInterface();" src="/static/img/start.png"></div> -->
+    <!-- <div class="tool" title="停止接口"><img onclick="stopInterface();" src="/static/img/stop.png"></div> -->
+    <!-- <div class="tool" title="新建报文组"><img onclick="addMessage();" src="/static/img/add.png"></div> -->
+    <!-- <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div> -->
     <div class="tool"></div>
 </div>
 <div class="center">
@@ -53,7 +54,7 @@ $(document).ready(function(){
             {% endfor %}   
           </ul> 
         </div>
-        <div class="nav_title">
+        <!-- <div class="nav_title">
           <div class="nav_img jbsz"></div>报文
         </div>  
         <div class="nav_list"> 
@@ -62,7 +63,7 @@ $(document).ready(function(){
             <li url="/app/messageList?name={{packetGroup}}">{{packetGroup}}</li>  
             {% endfor %}  
           </ul> 
-        </div>  
+        </div> -->  
       </div> 
     </div>
     <div class="right">

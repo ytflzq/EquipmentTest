@@ -1,2 +1,26 @@
 <PacketGroups version="1.2.0">
-    <PacketGroup><name>123</name><interval>1000</interval><cntperitval>0</cntperitval><loopcount>0</loopcount><incdec>true</incdec><PacketItems /></PacketGroup></PacketGroups>
+    <PacketGroup><name>123</name><interval>1000</interval><cntperitval>0</cntperitval><loopcount>0</loopcount><incdec>true</incdec><PacketItems /></PacketGroup><PacketGroup><name>555</name><interval>1000</interval><cntperitval>0</cntperitval><loopcount>0</loopcount><incdec>true</incdec><PacketItems><PacketItem>
+                <count>0</count>
+                <lostrate>0%</lostrate>
+                <items>
+                    <item>
+                        <protocol>0</protocol>
+                        <data type="auto">
+                            <dmac loop="0" num="0" type="mac">7A:7A:C0:A8:C8:01</dmac>
+                            <smac loop="0" num="0" type="mac">00:00:00:00:00:33</smac>
+                            <ethtype>
+                                <type>ethernetii</type>
+                                <value length="2" type="int">0x0800</value>
+                            </ethtype>
+                            <fcs length="0" type="int" />
+                        </data>
+                        <tail>0</tail>
+                        <flags>0</flags>
+                        <extradata>000000000100000000000000</extradata>
+                        <layer>2</layer>
+                        <offset>0</offset>
+                        <offset2>0</offset2>
+                    </item>
+                </items>
+            <name>5</name></PacketItem>
+            </PacketItems></PacketGroup></PacketGroups>
