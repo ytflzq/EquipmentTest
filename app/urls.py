@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^messageList$', views.messageList),
     url(r'^importFile$', views.importFile),
     url(r'^uploadFile$', views.uploadFile),
+    url(r'^downloadFile$', views.downloadFile),
     url(r'^eth$', views.eth),
     url(r'^arp$', views.arp),
     url(r'^step2$', views.step2),

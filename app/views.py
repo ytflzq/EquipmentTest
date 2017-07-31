@@ -22,7 +22,6 @@ def index(request):
     templateFile = "index/index.html"
     interfaces = getInterfaces()
     packetGroups = getPacketGroups()
-    # print packetGroups
     params={"name":name,"interfaces":interfaces,"packetGroups":packetGroups}
     return render_to_response(
         templateFile,
@@ -253,14 +252,14 @@ def arp(request):
     packet = request.GET['packet']
     packetGroupName = request.GET['packetGroupName']
     templateFile = "message/arp.html"
-    eth=getEth(packet,packetGroupName)
+    arp=getArp(packet,packetGroupName)
     action = ["Fixed","Increase","Decrease"]
     havevlan =[{"key":"no","text":"No Vlan"},{"key":"svlan","text":"Single Vlan"},{"key":"dvlan","text":"Double Vlan"}]
     pri =[{"key":"0","text":"0(Best Effort)"},{"key":"1","text":"1(Background)"},{"key":"2","text":"2(Spare)"},{"key":"3","text":"3(Excellent Effort)"},\
     {"key":"4","text":"4(Controlled Load)"},{"key":"5","text":"5(Video,小于100ms latency)"},{"key":"6","text":"6(Video,小于10ms latency)"},{"key":"7","text":"7(Network Control)"}]
     vlantype = ["0x8100","0x88a8","0x9100","0x9200"]
     
-    params={"packetGroupName":packetGroupName,"packet":packet,"eth":eth,"action":action,"havevlan":havevlan,"pri":pri,"vlantype":vlantype}
+    params={"packetGroupName":packetGroupName,"packet":packet,"eth":arp,"action":action,"havevlan":havevlan,"pri":pri,"vlantype":vlantype}
     return render_to_response(
         templateFile,
         params,
@@ -347,6 +346,7 @@ def createPacketElement(name):
     return PacketItem
 
 def saveEth(dic):
+    print "from web dit:"
     print dic
     tree = doXml2.read_xml(configpacketpath)
     root = tree.getroot()
@@ -378,14 +378,28 @@ def saveEth(dic):
                     #vlan
                     for vlans in PacketItem.findall('items/item/data/vlans'):
                         PacketItem.find('items/item/data').remove(vlans)
-                    vlans = createVlanNode(dic)
-                    PacketItem.find('items/item/data').append(vlans)
+                    if dic['havevlan']!="no":
+                        vlans = createVlanNode(dic)
+                        PacketItem.find('items/item/data').append(vlans)
                     #type
                     PacketItem.find('items/item/data/ethtype/value').text = dic["ethtype"]
                     PacketItem.find('items/item/data/ethtype/value').text = dic["ethtype"]
     tree.write(configpacketpath)
     status = "success"
     pass
+def getArp(packet,packetGroupName):
+    arp = {}
+    tree = doXml2.read_xml(configpacketpath)
+    root = tree.getroot()
+    for PacketGroup in root.findall('./PacketGroup'):
+        if PacketGroup.find("name").text==packetGroupName:
+            for PacketItem in PacketGroup.findall("./PacketItems/PacketItem"):
+                if PacketItem.find("name").text==packet:
+                    print len(PacketItem.findall("./items/item")[1].findall("incs/inc"))
+                    print PacketItem.findall("./items/item")[1].findall("incs/inc")[0].find("num").text
+                    pass
+    return arp
+
 def getEth(packet,packetGroupName):
     eth={}
     tree = doXml2.read_xml(configpacketpath)
@@ -475,7 +489,7 @@ def getEth(packet,packetGroupName):
                     
                     #type
                     eth["ethtype"] =PacketItem.find('items/item/data/ethtype/value').text
-    print "getEth"
+    print "getEth:"
     print eth
     return eth
 def createVlanNode(dic):
@@ -554,3 +568,21 @@ def createArpNode():
     root = tree.getroot()
     arp = root.find('./PacketGroup/PacketItems/arp/item')
     return arp
+
+
+def downloadFile(request):  
+    the_file_name='configpacket.xml'             #显示在弹出对话框中的默认的下载文件名      
+    filename=configpacketpath    #要下载的文件路径  
+    response=StreamingHttpResponse(readFile(filename))  
+    response['Content-Type']='application/octet-stream'  
+    response['Content-Disposition']='attachment;filename="{0}"'.format(the_file_name)  
+    return response  
+  
+def readFile(filename,chunk_size=512):  
+    with open(filename,'rb') as f:  
+        while True:  
+            c=f.read(chunk_size)  
+            if c:  
+                yield c  
+            else:  
+                break 
