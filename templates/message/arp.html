@@ -557,40 +557,22 @@
                 });
             } 
         }
-        function step2() {
-            if (validateData()) {
-                $.ajax({
-                    type:"post",
-                    url:"/app/insertEthStep2",
-                    data: $('form').serialize(),//表单数据
-                    dataType:"json",//json,xml,html,text
-                    success:function(d){
-                        if(d=="arp"){
-                            parent.layer.open({
-                              type: 2,
-                              title: '配置报文-erp',
-                              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
-                              shade: 0.8,
-                              btnAlign: 'c',
-                              closeBtn:2,
-                              move: false,
-                              area: ['580px', '800px'],
-                              offset: ['50px'],
-                              content: "/app/arp?packet={{packet}}&packetGroupName={{message}}" //iframe的url
-                            });
-                            closeWin();
-                        }
-                        if(d=="error"){
-                            layer.msg('已经存在相同的报文名称!');
-                        }
-                        
-                    }
-                });
-            } 
+        function smacactiononchange(){
+          alert();
         }
-        function closeWin(){
-            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-            parent.layer.close(index); //再执行关闭 
+        parent.a=2;
+        function step2() {
+            parent.layer.open({
+              type: 2,
+              title: '配置报文-第二步',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              btnAlign: 'c',
+              closeBtn:2,
+              area: ['600px', '500px'],
+              offset: ['200px'],
+              content: '/app/step2' //iframe的url
+            }); 
         }
         </script>
     </body> 

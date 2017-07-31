@@ -60,6 +60,48 @@
                     </data>
                 </vlan>
             </vlans>
+            <arp>
+                <item>
+                        <protocol>1</protocol>
+                        <data>00010800060400010000000000aac0a8c821000000000000c0a8c801</data>
+                        <incs>
+                            <inc>
+                                <offset>8</offset>
+                                <len>6</len>
+                                <num>0</num>
+                                <loop>0</loop>
+                                <bits>0</bits>
+                            </inc>
+                            <inc>
+                                <offset>14</offset>
+                                <len>4</len>
+                                <num>0</num>
+                                <loop>0</loop>
+                                <bits>0</bits>
+                            </inc>
+                            <inc>
+                                <offset>18</offset>
+                                <len>6</len>
+                                <num>0</num>
+                                <loop>0</loop>
+                                <bits>0</bits>
+                            </inc>
+                            <inc>
+                                <offset>24</offset>
+                                <len>4</len>
+                                <num>0</num>
+                                <loop>0</loop>
+                                <bits>0</bits>
+                            </inc>
+                        </incs>
+                        <tail>0</tail>
+                        <flags>0</flags>
+                        <extradata>0000000000000000</extradata>
+                        <layer>3</layer>
+                        <offset>0</offset>
+                        <offset2>0</offset2>
+                    </item>
+            </arp>
         </PacketItems>
     </PacketGroup>
 </PacketGroups>

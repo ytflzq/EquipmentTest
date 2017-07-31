@@ -114,6 +114,16 @@ def insertEth(request):
     status = "success"
     return HttpResponse(json.dumps(status, ensure_ascii=False))
 
+@csrf_exempt
+def insertEthStep2(request):
+    status = saveEth(request.POST)
+    clearData(request.POST)
+    if request.POST["ethtype"]=="0x0806":
+        status ="arp"
+    else:
+        status ="ipv4"
+    return HttpResponse(json.dumps(status, ensure_ascii=False))
+
 def deletePacket(request):
     name = request.GET['packet']
     packetGroupName = request.GET['messageGroupName']
@@ -239,7 +249,23 @@ def eth(request):
         params,
         RequestContext(request)
     )
-
+def arp(request):
+    packet = request.GET['packet']
+    packetGroupName = request.GET['packetGroupName']
+    templateFile = "message/arp.html"
+    eth=getEth(packet,packetGroupName)
+    action = ["Fixed","Increase","Decrease"]
+    havevlan =[{"key":"no","text":"No Vlan"},{"key":"svlan","text":"Single Vlan"},{"key":"dvlan","text":"Double Vlan"}]
+    pri =[{"key":"0","text":"0(Best Effort)"},{"key":"1","text":"1(Background)"},{"key":"2","text":"2(Spare)"},{"key":"3","text":"3(Excellent Effort)"},\
+    {"key":"4","text":"4(Controlled Load)"},{"key":"5","text":"5(Video,小于100ms latency)"},{"key":"6","text":"6(Video,小于10ms latency)"},{"key":"7","text":"7(Network Control)"}]
+    vlantype = ["0x8100","0x88a8","0x9100","0x9200"]
+    
+    params={"packetGroupName":packetGroupName,"packet":packet,"eth":eth,"action":action,"havevlan":havevlan,"pri":pri,"vlantype":vlantype}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )
 def step2(request):
     templateFile = "message/step2.html"
     params={}
@@ -352,7 +378,7 @@ def saveEth(dic):
                     #vlan
                     for vlans in PacketItem.findall('items/item/data/vlans'):
                         PacketItem.find('items/item/data').remove(vlans)
-                    vlans = creaeVlanNode(dic)
+                    vlans = createVlanNode(dic)
                     PacketItem.find('items/item/data').append(vlans)
                     #type
                     PacketItem.find('items/item/data/ethtype/value').text = dic["ethtype"]
@@ -452,7 +478,7 @@ def getEth(packet,packetGroupName):
     print "getEth"
     print eth
     return eth
-def creaeVlanNode(dic):
+def createVlanNode(dic):
     tree = doXml2.read_xml(demopath)
     root = tree.getroot()
     vlanss = root.findall('./PacketGroup/PacketItems/vlans')
@@ -501,3 +527,30 @@ def creaeVlanNode(dic):
             vlans.find('./vlan/data').attrib["num"] = "-"+dic["svlannum"]
             vlans.find('./vlan/data').attrib["loop"] = "-"+dic["svlanloop"]
     return vlans
+
+def clearData(dic):
+    tree = doXml2.read_xml(configpacketpath)
+    root = tree.getroot()
+    if dic['ethtype']=='0x0806':#erp
+        for PacketGroup in root.findall('./PacketGroup'):
+            if PacketGroup.find("name").text==dic['packetGroupName']:
+                for PacketItem in PacketGroup.findall("./PacketItems/PacketItem"):
+                    if PacketItem.find("name").text==dic["packet"]:
+                        arp = createArpNode()
+                        if len(PacketItem.findall("./items/item"))==1:
+                            PacketItem.find("./items").append(arp)
+                        elif PacketItem.findall("./items/item")[1].find("protocol").text!="1":
+                            item = PacketItem.findall("./items/item")[0]
+                            PacketItem.find("./items").clear()
+                            PacketItem.find("./items").append(item)
+                            PacketItem.find("./items").append(arp)
+    elif dic['ethtype'] == '':
+        pass
+    pass
+    tree.write(configpacketpath)
+
+def createArpNode():
+    tree = doXml2.read_xml(demopath)
+    root = tree.getroot()
+    arp = root.find('./PacketGroup/PacketItems/arp/item')
+    return arp
