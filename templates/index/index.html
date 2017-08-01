@@ -27,7 +27,9 @@ $(document).ready(function(){
     盒子设备秒变测试仪
         <img src="/static/img/user.png">
         <span>欢迎您，管理员 </span>
-        <button type="button" class="btn btn-sm btn-default"  onclick="loginout();">退出</button>
+        <span onclick="loginout();" style="cursor: pointer;">|退出</span>
+        <span onclick="changepwd();" style="cursor: pointer;">|修改密码</span>
+        <!-- <button type="button" class="btn btn-sm btn-default"  onclick="loginout();">退出</button> -->
     </div>
 </div>
 <div style="clear: both;"></div>
@@ -110,6 +112,17 @@ function importFile(){
       offset: ['200px'],
       content: '/app/importFile' //iframe的url
     }); 
+}
+function changepwd(){
+    layer.open({
+        type: 2,
+        title: '修改密码',
+        shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+        shade: 0.8,
+        area: ['400px', '190px'],
+        offset: ['200px'],
+        content: '/app/createMessageGroup' //iframe的url
+      }); 
 }
 </script>
 </body>

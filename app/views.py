@@ -9,6 +9,8 @@ from django.http import HttpResponse
 from util import doXml2
 import os
 import json
+import time,datetime,random
+import simplejson
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 configpacketpath = os.path.join(BASE_DIR, 'data/configpacket.xml')
 demopath = os.path.join(BASE_DIR, 'data/demo.xml')
@@ -28,6 +30,22 @@ def index(request):
         params,
         RequestContext(request)
     )
+
+@csrf_exempt
+def getRate(request):
+    result = []
+    dataTimes = []
+    datas = [5]
+    now = datetime.datetime.now()
+    for x in xrange(1,10):
+        dt = now-datetime.timedelta(seconds=20-2*x) #timedelta([days[, seconds[, microseconds[, milliseconds[, minutes[, hours[, weeks]]]]]]])
+        # dataTimes.append(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.mktime(dt.timetuple()))))
+        dataTimes.append(time.strftime('%H:%M:%S',time.localtime(time.mktime(dt.timetuple()))))
+        datas.append(int(random.uniform(10, 20)))
+    
+    result.append(dataTimes)
+    result.append(datas)
+    return HttpResponse(simplejson.dumps(result), content_type="application/json; charset=utf-8")
 def interfaceEdit(request):
     interface = getInterfaceByName(request.GET['name'])
     templateFile = "index/interfaceEdit.html"

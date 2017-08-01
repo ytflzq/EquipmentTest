@@ -76,30 +76,30 @@
             <div class="row">
                 <div class="table-responsive">
                   <table class="table">
-                    <caption>响应式表格布局</caption>
+                    <caption></caption>
                     <thead>
                       <tr>
-                        <th>产品</th>
-                        <th>付款日期</th>
-                        <th>状态</th></tr>
+                        <th>序号</th>
+                        <th>时间</th>
+                        <th>速率大小</th></tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td>产品1</td>
-                        <td>23/11/2013</td>
-                        <td>待发货</td></tr>
+                        <td>1</td>
+                        <td>2017-8-1 09:52:42</td>
+                        <td>10M/s</td></tr>
                       <tr>
-                        <td>产品2</td>
-                        <td>10/11/2013</td>
-                        <td>发货中</td></tr>
+                        <td>2</td>
+                        <td>2017-8-1 09:52:42</td>
+                        <td>10M/s</td></tr>
                       <tr>
-                        <td>产品3</td>
-                        <td>20/10/2013</td>
-                        <td>待确认</td></tr>
+                        <td>3</td>
+                        <td>2017-8-1 09:52:42</td>
+                        <td>10M/s</td></tr>
                       <tr>
-                        <td>产品4</td>
-                        <td>20/10/2013</td>
-                        <td>已退货</td></tr>
+                        <td>4</td>
+                        <td>2017-8-1 09:52:42</td>
+                        <td>10M/s</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -118,7 +118,7 @@
             },
             series : [
                 {
-                    name:'业务指标',
+                    name:'实时速率',
                     type:'gauge',
                     splitNumber: 10,       // 分割段数，默认为5
                     axisLine: {            // 坐标轴线
@@ -170,10 +170,7 @@
         };
         var myChart = echarts.init(document.getElementById('gauge'));
         myChart.setOption(gaugeOption, true);
-        setInterval(function () {
-            gaugeOption.series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0;
-            myChart.setOption(gaugeOption, true);
-        },2000);
+        
 
         var lineOption = {
             
@@ -220,6 +217,16 @@
                         color: '#57617B'
                     }
                 },
+                splitNumber:3,
+                axisLabel:{
+                    // interval:2,//坐标轴刻度标签的显示间隔，在类目轴中有效。默认会采用标签不重叠的策略间隔显示标签。可以设置成 0 强制显示所有标签。如果设置为 1，表示『隔一个标签显示一个标签』，如果值为 2，表示隔两个标签显示一个标签，以此类推
+                    // inside:"true",
+                    // rotate:"20",
+                    textStyle:{
+                        color:"#150404"
+                    }
+                },
+                nameLocation:"middle",//start,end
                 data: ['13:00', '13:05', '13:10', '13:15', '13:20', '13:25', '13:30', '13:35', '13:40', '13:45', '13:50', '13:55']
             }],
             yAxis: [{
@@ -284,12 +291,31 @@
         var lineChart = echarts.init(document.getElementById('line'));
         lineChart.setOption(lineOption, true);
         setInterval(function () {
-            console.log(lineOption.xAxis[0]);
-            var data = lineOption.series[0].data;
-            data.push(data.shift());
-            lineOption.series[0].data = data;
-            lineChart.setOption(lineOption, true);
+            // console.log(lineOption.xAxis[0]);
+            getRate();
+            
         },2000);
+        // setInterval(function () {
+        //     gaugeOption.series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0;
+        //     myChart.setOption(gaugeOption, true);
+        // },2000);
+        function getRate(){
+            $.ajax({
+                    type:"get",
+                    url:"/app/getRate",
+                    data:{},//表单数据
+                    dataType:"json",//json,xml,html,text
+                    success:function(dataArr){
+                        console.log(lineOption.xAxis[0].data = dataArr[0]);
+                        lineOption.series[0].data = dataArr[1];
+                        lineChart.setOption(lineOption, true);
+                        gaugeOption.series[0].data[0].value = dataArr[1][dataArr[1].length-1]
+                        myChart.setOption(gaugeOption, true);
+                    }
+                });
+        }
+
+
         function configInterfaceOption(interface){
             parent.layer.open({
               type: 2,
