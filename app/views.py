@@ -22,7 +22,12 @@ def index(request):
     name = request.session.get('name',default=None)
     role_id = request.session.get('role_id',default=False)
     templateFile = "index/index.html"
-    interfaces = getInterfaces()
+    interfaces = request.session.get('interface',default="")
+    print 111
+    print interfaces
+    interfaces = interfaces.split(',')
+    print interfaces
+    # interfaces = getInterfaces()
     packetGroups = getPacketGroups()
     params={"name":name,"interfaces":interfaces,"packetGroups":packetGroups}
     return render_to_response(
@@ -30,22 +35,69 @@ def index(request):
         params,
         RequestContext(request)
     )
-
+def allIndex(request):
+    name = request.session.get('name',default=None)
+    templateFile = "index/allIndex.html"
+    params={"name":name}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )
+@csrf_exempt
+def getAllRate(request):
+    result = []
+    interfaces = request.session.get('interface',default="")
+    database = Database()
+    row = database.select_fetchall("""SELECT portname,totalTxBits,totalRxBits,txCountBits,rxCountBits,txRateMbps,rxRateMbps,txCountFrames,rxCountFrames,txRateFrames,rxRateFrames
+        FROM interfaceStatus
+         """, [])
+    for x in row:
+        x['portname'] = getInterfaceByport(x['portname'])
+        if x['portname']=='':
+            continue
+        if interfaces.find(x['portname'])!=-1:
+            if x['portname'].find("T")!=-1:
+                x['txRateMbpsPrecent'] = int(x['txRateMbps'])/10240.00
+                x['rxRateMbpsPrecent'] = int(x['rxRateMbps'])/10240.00
+                x['rxRateFramesPrecent'] = int(x['txRateFrames'])/10240.00
+                x['rxRateFramesPrecent'] = int(x['rxRateFrames'])/10240.00
+            else:
+                x['txRateMbpsPrecent'] = int(x['txRateMbps'])/1024.00
+                x['rxRateMbpsPrecent'] = int(x['rxRateMbps'])/1024.00
+                x['rxRateFramesPrecent'] = int(x['txRateFrames'])/1024.00
+                x['rxRateFramesPrecent'] = int(x['rxRateFrames'])/1024.00
+            result.append(x)
+        else:
+            continue
+    return HttpResponse(simplejson.dumps(result), content_type="application/json; charset=utf-8")
 @csrf_exempt
 def getRate(request):
+    interface= request.GET['interface']
+    interface = getInterfaceByName(interface)
     result = []
     dataTimes = []
-    datas = [5]
+    updatas = []
+    downdatas = []
     now = datetime.datetime.now()
-    for x in xrange(1,10):
-        dt = now-datetime.timedelta(seconds=20-2*x) #timedelta([days[, seconds[, microseconds[, milliseconds[, minutes[, hours[, weeks]]]]]]])
+    database = Database()
+    row = database.select_fetchall("""SELECT id,txRateMbps,rxRateMbps FROM interfaceStatusHistory where portname=%s ORDER BY id ASC LIMIT 10
+         """, [interface])
+    i=0
+    for x in row:
+        dt = now-datetime.timedelta(seconds=20-i) #timedelta([days[, seconds[, microseconds[, milliseconds[, minutes[, hours[, weeks]]]]]]])
         # dataTimes.append(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.mktime(dt.timetuple()))))
         dataTimes.append(time.strftime('%H:%M:%S',time.localtime(time.mktime(dt.timetuple()))))
-        datas.append(int(random.uniform(10, 20)))
+        updatas.append(int(x['txRateMbps']))
+        downdatas.append(int(x['rxRateMbps']))
+        i = i+1
     
     result.append(dataTimes)
-    result.append(datas)
+    result.append(updatas)
+    result.append(downdatas)
     return HttpResponse(simplejson.dumps(result), content_type="application/json; charset=utf-8")
+
+
 def interfaceEdit(request):
     interface = getInterfaceByName(request.GET['name'])
     templateFile = "index/interfaceEdit.html"
@@ -604,3 +656,22 @@ def readFile(filename,chunk_size=512):
                 yield c  
             else:  
                 break 
+def getInterfaceByport(port):
+    interfacepath = os.path.join(BASE_DIR, 'data/interface_phy.xml')
+    tree = doXml2.read_xml(interfacepath)
+    root = tree.getroot()
+    interfaces = tree.findall("./workif/interface")
+    for x in interfaces:
+        if x.attrib['port']==port:
+            return x.attrib['name']
+    return ""
+
+def getInterfaceByName(name):
+    interfacepath = os.path.join(BASE_DIR, 'data/interface_phy.xml')
+    tree = doXml2.read_xml(interfacepath)
+    root = tree.getroot()
+    interfaces = tree.findall("./workif/interface")
+    for x in interfaces:
+        if x.attrib['name']==name:
+            return x.attrib['port']
+    return ""

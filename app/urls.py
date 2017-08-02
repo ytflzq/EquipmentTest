@@ -6,6 +6,8 @@ urlpatterns = [
     url(r'^getRate$', views.getRate),
     url(r'^importFile$', views.importFile),
     url(r'^uploadFile$', views.uploadFile),
+    url(r'^allIndex$', views.allIndex),
+    url(r'^getAllRate$', views.getAllRate),
 
 
 

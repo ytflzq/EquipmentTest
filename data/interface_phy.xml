@@ -1,0 +1,25 @@
+<root>
+  <mgtif>
+  <interface alias="M" gateway="" gateway_ip6="" ip4="10.245.25.250/16" ip6="" ip6_auto_conf="false" ip6_local="" isdefault="false" isdefault_ip6="false" linkmode="auto" linkspeed="auto" metric="" metric_ip6="" mtu="1500" mtu6="1500" name="M" style="" />
+<interface alias="H1" gateway="" gateway_ip6="" ip4="10.66.250.118/24" ip6="" ip6_auto_conf="false" ip6_local="" isdefault="false" isdefault_ip6="false" linkmode="auto" linkspeed="auto" metric="" metric_ip6="" mtu="1500" mtu6="1500" name="H1" style="" />
+</mgtif>
+  <workif>
+  
+  <interface assignflag="false" linkmode="auto" linkspeed="auto" name="T1/1" port="12" style="82599" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="T1/2" port="13" style="82599" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="T2/1" port="0" style="82599" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="T2/2" port="1" style="82599" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="T3/1" port="10" style="82599" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="T3/2" port="11" style="82599" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="G4/1" port="2" style="82576" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="G4/2" port="3" style="82576" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="G4/3" port="4" style="82576" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="G4/4" port="5" style="82576" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="G4/5" port="6" style="82576" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="G4/6" port="7" style="82576" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="G4/7" port="8" style="82576" />
+<interface assignflag="false" linkmode="auto" linkspeed="auto" name="G4/8" port="9" style="82576" />
+</workif>
+  <agif>
+  </agif>
+</root>

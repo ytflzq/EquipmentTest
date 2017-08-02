@@ -12,7 +12,7 @@ class Database:
     def select_fetchone(self,sql,params):     
         cursor = self.get_cursor()     
         cursor.execute(sql,params)     
-        print "select_fetchone sql: %s" %(sql)     
+        # print "select_fetchone sql: %s" %(sql)     
         object = cursor.fetchone()     
         desc = cursor.description     
              

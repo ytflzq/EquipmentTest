@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>rth</title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
+        <script type="text/javascript" src="/static/js/layer.js"></script>
+        <style type="text/css">
+          .row{
+              margin-left: 0px;
+          }
+          .form{
+              margin:20px;
+          }
+          .layui-elem-field legend {
+              font-size: 15px;
+              font-weight: bolder;
+              margin-left: 20px;
+              padding: 0 5px;
+          }
+          .layui-input, .layui-textarea{
+              width: 150px;
+          }
+
+          .layui-form-select dl {
+            width: 150px;
+            top: 25px;
+          }
+          .layui-form-item .layui-inline {
+              margin-bottom: 0;
+              margin-right: 10px;
+          }
+          .layui-form-item {
+                clear: both;
+                margin-bottom: 5px;
+          }
+          .layui-form-label{
+            padding: 0;
+          }
+          .layui-input-block {
+              margin-left: 70px;
+              min-height: 10px;
+          }
+          .layui-input, .layui-textarea, .layui-select {
+              background-color: #fff;
+              border: 1px solid #e6e6e6;
+              border-radius: 2px;
+              height: 25px;
+              line-height: 25px;
+          }
+          .layui-field-title{
+            border-width: 10px medium medium;
+          }
+          .layui-form-checkbox{
+            margin-top: 10px;
+          }
+          .layui-form-checkbox span{
+            width: 35px;
+          }
+        </style>
+    </head>
+    <body style="width: 100%;padding: 0;margin:0 ">
+        <div class="container">
+            <div class="row">
+                  <form class="layui-form">
+                      <fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
+                          <legend>可选接口信息</legend>
+                      </fieldset>
+                      <div class="layui-input-block">
+                        {% for interface in interfaces %}
+                            {% ifequal interface.ismy "true" %}
+                            <input type="checkbox" name="{{interface.name}}" checked title="{{interface.name}}">
+                            {% endifequal  %}
+                          {% ifequal interface.ismy "false" %}
+                            <input type="checkbox" name="{{interface.name}}" title="{{interface.name}}">
+                            {% endifequal  %}
+                      {% endfor %}
+                      </div>
+                      <fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
+                          <legend>其他绑定接口</legend>
+                      </fieldset>
+                      <div class="layui-input-block">
+                        {% for interface in interfaces %}
+                            {% ifequal interface.ismy "other" %}
+                            <input type="checkbox" name="{{interface.name}}" ischecked = "true" userName="{{interface.userName}}" lay-filter="checkboxtool"   title="{{interface.name}}">
+                            {% endifequal  %}
+                          {% endfor %}
+                      </div>
+                    </form>
+            </div>
+        </div>
+        <div style="position: absolute;bottom: 20px;right: 20px;">
+            <button class="layui-btn layui-btn-warm" onclick="save();">确定</button>
+            <button class="layui-btn" onclick="closeWin();">关闭</button>
+        </div>
+        <script type="text/javascript" src="/static/js/layui.js"></script>
+        <script type="text/javascript">
+        layui.use('form', function(){
+          var form = layui.form();
+          form.on("checkbox(checkboxtool)",function(data){
+            if ($(data.elem).attr("ischecked")=='true') {
+              $(data.elem).attr("ischecked","false");
+              layer.alert($(data.elem).attr("userName")+"用户已经占用此接口,请谨慎选择");
+            }else{
+              $(data.elem).attr("ischecked","true");
+            }
+            form.render();
+          });
+
+        });
+        function onchangecheckbok(){
+          alert();
+        }
+        function validateData(){
+            return true;
+        }
+        function save(){ 
+            if (validateData()) {
+                $.ajax({
+                    type:"post",
+                    url:"/login/updateInterface",
+                    data: $('form').serialize(),//表单数据
+                    dataType:"json",//json,xml,html,text
+                    success:function(d){
+                        if(d=="success"){
+                            layer.msg('保存成功！');//保存成功提示
+                            parent.location.reload(); // 父页面刷新
+                            closeWin();
+                        }
+                        if(d=="error"){
+                            layer.msg('已经存在相同的报文名称!');
+                        }
+                        
+                    }
+                });
+            } 
+        }
+        function smacactiononchange(){
+          alert();
+        }
+
+        function closeWin(){
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭 
+        }
+        </script>
+    </body> 
+</html>

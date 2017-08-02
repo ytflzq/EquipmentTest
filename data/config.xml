@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <root> 
   <interfaces> 
-    <interface capture="333333" description="23" name="G1/1" quote="22223333"/>  
-    <interface capture="" description="12" name="G1/2" quote=""/>  
-    <interface name="G1/3"/>  
-    <interface capture="" description="" name="G1/4" quote=""/>  
-    <interface capture="3" description="12" name="G1/5" quote="3"/> 
+    <interface capture="333333" description="23" name="G1/1" quote="22223333" />  
+    <interface capture="" description="12" name="G1/2" quote="" />  
+    <interface name="G1/3" />  
+    <interface capture="" description="" name="G1/4" quote="" />  
+    <interface capture="3" description="12" name="G1/5" quote="3" /> 
   </interfaces>   
+  <users>
+  	<user id="1" interface="T1/1,T1/2,G4/1,G4/8,T2/1" name="test" password="12345" />
+  	<user id="2" interface="T2/2,G4/2,G4/5,G4/7" name="test1" password="test123" />s
+  </users>
 </root>

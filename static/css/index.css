@@ -31,6 +31,13 @@ body{
     height: 12px;
     cursor: pointer;
 }
+.tool>img{
+    margin-top: 9px;
+    margin-left: 8px;
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+}
 .toolTitle{
     margin: 0;
     padding: 0;
@@ -53,7 +60,7 @@ body{
     line-height: 30px;
 }
 .left {
-    width: 200px;
+    width: 170px;
     border-right: 1px solid #CCCCCC;
     position: absolute;
     top: 60px;
@@ -66,7 +73,7 @@ body{
     /*background-color: #ffd;*/
     position: absolute;
     top: 60px;
-    left: 200px;
+    left: 170px;
     color: #000000;
     font-size: 14px;
     text-align: center;
@@ -78,7 +85,7 @@ body{
 }
 .nav {
     text-align: center;
-    width: 200px;
+    width: 170px;
     padding-top: 0px;
 }
 

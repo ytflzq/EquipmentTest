@@ -8,17 +8,19 @@
 <link rel="stylesheet" type="text/css" href="/static/css/index.css">
 <script type="text/javascript">
 $(document).ready(function(){
-        $(".right").css("width",($(document).width()-200)+"px");
+        $(".right").css("width",($(document).width()-170)+"px");
         $(".right").css("height",($(document).height()-60)+"px");
         $(".nav_title").click(function(){ 
-            $(this).next("div").slideToggle("slow")  
-            .siblings(".nav_list:visible").slideUp("slow");
+            $("iframe").attr("src","/app/allIndex");
+            // $(this).next("div").slideToggle("slow")  
+            // .siblings(".nav_list:visible").slideUp("slow");
         });
         $(".left li").click(function(){ 
             $("iframe").attr("src",$(this).attr("url"));
         });
+        $(".nav_title").next("div").show("slow")  
+            .siblings(".nav_list:visible").show("slow");
     });
-
 </script>
 </head>
 <body>
@@ -26,7 +28,7 @@ $(document).ready(function(){
     <div class="user">
     盒子设备秒变测试仪
         <img src="/static/img/user.png">
-        <span>欢迎您，管理员 </span>
+        <span>欢迎您，管理员{{name}} </span>
         <span onclick="loginout();" style="cursor: pointer;">|退出</span>
         <span onclick="changepwd();" style="cursor: pointer;">|修改密码</span>
         <!-- <button type="button" class="btn btn-sm btn-default"  onclick="loginout();">退出</button> -->
@@ -35,9 +37,9 @@ $(document).ready(function(){
 <div style="clear: both;"></div>
 <div class="tools">
     <div class="toolTitle">工具栏</div>
-    <div class="tool" title="配置报文"><a href=" Test://"><img src="/static/img/start.png"></a></div>
-    <!-- <div class="tool" title="启动接口"><img onclick="startInterface();" src="/static/img/start.png"></div> -->
-    <!-- <div class="tool" title="停止接口"><img onclick="stopInterface();" src="/static/img/stop.png"></div> -->
+    <div class="tool" title="配置报文"><a href=" CCC://"><img src="/static/img/start.png"></a></div>
+    <div class="tool" title="绑定接口"><img onclick="bindInterface();" src="/static/img/import.png"></div>
+    <div class="tool" title="停止接口"><img onclick="stopInterface();" src="/static/img/stop.png"></div>
     <!-- <div class="tool" title="新建报文组"><img onclick="addMessage();" src="/static/img/add.png"></div> -->
     <!-- <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div> -->
     <div class="tool"></div>
@@ -51,25 +53,14 @@ $(document).ready(function(){
         <div class="nav_list"> 
           <ul> 
            {% for interface in interfaces %}
-            <!-- <li url="/app/interfaceEdit?name={{interface.name}}">{{interface.name}}</li>   -->
-            <li url="/app/rate?name={{interface.name}}">{{interface.name}}</li>  
+            <li url="/app/rate?name={{interface}}">{{interface}}</li>  
             {% endfor %}   
           </ul> 
         </div>
-        <!-- <div class="nav_title">
-          <div class="nav_img jbsz"></div>报文
-        </div>  
-        <div class="nav_list"> 
-          <ul> 
-            {% for packetGroup in packetGroups %}
-            <li url="/app/messageList?name={{packetGroup}}">{{packetGroup}}</li>  
-            {% endfor %}  
-          </ul> 
-        </div> -->  
       </div> 
     </div>
     <div class="right">
-        <iframe id="iframeParent" src=""></iframe>
+        <iframe id="iframeParent" src="/app/allIndex"></iframe>
     </div>
 </div>
 <div class="buttom">
@@ -98,6 +89,7 @@ function addMessage(){
       shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
       shade: 0.8,
       area: ['400px', '190px'],
+      move: false,
       offset: ['200px'],
       content: '/app/createMessageGroup' //iframe的url
     }); 
@@ -108,6 +100,7 @@ function importFile(){
       title: '导入配置',
       shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
       shade: 0.8,
+      move: false,
       area: ['400px', '130px'],
       offset: ['200px'],
       content: '/app/importFile' //iframe的url
@@ -119,10 +112,24 @@ function changepwd(){
         title: '修改密码',
         shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
         shade: 0.8,
-        area: ['400px', '190px'],
+        move: false,
+        area: ['400px', '250px'],
         offset: ['200px'],
-        content: '/app/createMessageGroup' //iframe的url
+        content: '/login/changepwd' //iframe的url
       }); 
+}
+
+function bindInterface(){
+    layer.open({
+        type: 2,
+        title: '绑定接口',
+        shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+        shade: 0.8,
+        move: false,
+        area: ['400px', '520px'],
+        offset: ['200px'],
+        content: '/login/bindInterface' //iframe的url
+      });
 }
 </script>
 </body>

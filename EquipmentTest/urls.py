@@ -18,6 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 # from django.contrib import admin
 urlpatterns = [
+    url(r'^/', include('login.urls')),
     url(r'^login/', include('login.urls')),
     url(r'^app/', include('app.urls')),
 ]+ static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)

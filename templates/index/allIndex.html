@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Laravel</title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="/static/js/echarts.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+        <style type="text/css">
+            .row{
+                margin-left: 0px;
+            }
+            .tools{
+                top: 30px;
+                width: 100%;
+                height: 30px;
+                background-color: #FBD1D1;
+            }
+            .tool{
+                margin: 0;
+                padding: 0;
+                margin-right: 10px;
+                float: right;
+                width: 30px;
+                height: 30px;
+            }
+            .tool>img{
+                margin-top: 9px;
+                margin-left: 8px;
+                width: 12px;
+                height: 12px;
+                cursor: pointer;
+            }
+            .toollast{
+                margin: 0;
+                padding: 0;
+                margin-right: 150px;
+                float: right;
+                width: 30px;
+                height: 30px;
+            }
+            .toolTitle{
+                margin: 0;
+                padding: 0;
+                margin-left: 10px;
+                float: left;
+                width: 140px;
+                height: 30px;
+                font-size: 14px;
+                line-height: 30px;
+            }
+            .container-fuild{
+                font-size: 13px;
+            }
+        </style>
+    </head>
+    <body style="width: 100%;padding: 0;margin:0 ">
+        <div class="container-fuild">
+            <div class="row">
+                <div class="tools">
+                    <div class="toolTitle">接口名流量概况</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-responsive">
+                  <table class="table">
+                    <caption></caption>
+                    <thead>
+                      <tr>
+                        <th>Port Name</th>
+                        <th>Total Tx bits</th>
+                        <th>Total Rx bits</th>
+                        <th>Tx Count(bits)</th>
+                        <th>Rx Count(bits)</th>
+                        <th>Tx Rate(Mbps)</th>
+                        <th>Rx Rate(Mbps)</th>
+                        <th>Tx Rate(precent)</th>
+                        <th>Rx Rate(precent)</th>
+                        <th>Tx Count(Frames)</th>
+                        <th>Rx Count(Frames)</th>
+                        <th>Tx Rate(Frames)</th>
+                        <th>Rx Rate(Frames)</th>
+                        <th>Tx Rate(precent)</th>
+                        <th>Rx Rate(precent)</th>
+                    </tr>
+                    </thead>
+                    <tbody id ="data">
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+        </div>
+        <div class="list">
+            <div></div>
+        </div>
+        <script type="text/javascript">
+        getAllRate();
+        setInterval(function () {
+            getAllRate();
+        },6000);
+        function getAllRate(){
+            $.ajax({
+                    type:"get",
+                    url:"/app/getAllRate",
+                    data:{},//表单数据
+                    dataType:"json",//json,xml,html,text
+                    success:function(data){
+                        console.log(data);
+                        var strHtml ="";
+                        for (var i = 0; i < data.length; i++) {
+                            strHtml +="<tr>" 
+                            strHtml+="<td>"+data[i].portname+"</td>";
+                            strHtml+="<td>"+data[i].totalTxBits+"</td>";
+                            strHtml+="<td>"+data[i].totalRxBits+"</td>";
+                            strHtml+="<td>"+data[i].txCountBits+"</td>";
+                            strHtml+="<td>"+data[i].rxCountBits+"</td>";
+                            strHtml+="<td>"+data[i].txRateMbps+"</td>";
+                            strHtml+="<td>"+data[i].rxRateMbps+"</td>";
+                            strHtml+="<td>"+data[i].txRateMbpsPrecent+"</td>";
+                            strHtml+="<td>"+data[i].rxRateMbpsPrecent+"</td>";
+                            strHtml+="<td>"+data[i].txCountFrames+"</td>";
+                            strHtml+="<td>"+data[i].rxCountFrames+"</td>";
+                            strHtml+="<td>"+data[i].txRateFrames+"</td>";
+                            strHtml+="<td>"+data[i].rxRateFrames+"</td>";
+                            strHtml+="<td>"+data[i].rxRateFramesPrecent+"</td>";
+                            strHtml+="<td>"+data[i].rxRateFramesPrecent+"</td>";
+                            strHtml+="</tr>";
+                        };
+                        $("#data").html(strHtml);
+                    }
+                });
+        }
+
+
+        function configInterfaceOption(interface){
+            parent.layer.open({
+              type: 2,
+              title: '配置接口',
+              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+              shade: 0.8,
+              btnAlign: 'c',
+              closeBtn:2,
+              area: ['500px', '400px'],
+              offset: ['200px'],
+              content: '/app/interfaceEdit?name='+interface //iframe的url
+            }); 
+        }
+        </script>
+    </body> 
+</html>
