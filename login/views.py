@@ -36,6 +36,7 @@ def changepwd(request):
 
 @csrf_exempt
 def login_action(request):
+
     name = request.POST['name']
     password = request.POST['password']
     # database = Database()
@@ -44,6 +45,7 @@ def login_action(request):
     for x in users:
         if x['name'] == name and x['password']==password:
             status = True
+            request.session.set_expiry(3000)
             request.session['name'] = name
             request.session['user_id'] = x['id']
             request.session['interface'] = x['interface']
@@ -84,6 +86,8 @@ def bindInterface(request):
     result = []
     users = getUsers()
     for x in interfaces:
+        # if x.attrib['port']=='1' or x.attrib['port']=='0':
+            # continue
         ishave = False
         for y in users:
             if y['name'] == name:

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
+        <script type="text/javascript" src="/static/js/layer.js"></script>
+    </head>
+    <body style="width: 100%;padding-top: 20px;">
+        <form class="layui-form" action="" id="createMessageForm">
+            {% csrf_token %}
+          <div class="layui-form-item">
+            <label class="layui-form-label">URL:</label>
+            <div class="layui-input-block">
+              <input type="text" name="url" id="url" required   placeholder="请输入URL" autocomplete="off" class="layui-input" style="width: 200px;">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">IP:</label>
+            <div class="layui-input-block">
+              <input type="text" name="ip" id="ip" required   placeholder="请输入IP" autocomplete="off" class="layui-input" style="width: 200px;">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">Count:</label>
+            <div class="layui-input-block">
+              <input type="text" name="count" id="count" required   placeholder="请输入Count" autocomplete="off" class="layui-input" style="width: 200px;">
+            </div>
+          </div>
+        </form>
+        <div style="position: absolute;bottom: 20px;right: 20px;">
+            <button class="layui-btn layui-btn-warm" onclick="save();">确定</button>
+            <button class="layui-btn" onclick="closeWin();">关闭</button>
+        </div>
+        <script>
+        function validateData(){
+            if ($("#url").val()=="") {
+                layer.alert("URL不能为空！");
+                return false;
+            }
+            if ($("#ip").val()=="") {
+                layer.alert("IP不能为空！");
+                return false;
+            }
+            if ($("#count").val()=="") {
+                layer.alert("Count不能为空！");
+                return false;
+            }
+            return true;
+        }
+        function save(){ 
+            if (validateData()) {
+                $.ajax({
+                    type:"post",
+                    url:"/app/doConfigApplication",
+                    data: $('form').serialize(),//表单数据
+                    dataType:"json",//json,xml,html,text
+                    success:function(d){
+                        if(d=="success"){
+                            layer.msg('配置成功');//保存成功提示
+                            // parent.location.reload(); // 父页面刷新
+                            parent.layer.open({
+                              type: 2,
+                              title: '结果展示',
+                              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+                              shade: 0.8,
+                              btnAlign: 'c',
+                              closeBtn:2,
+                              move: false,
+                              area: ['580px', '800px'],
+                              offset: ['50px'],
+                              content: "/app/showConfigApplication" //iframe的url
+                            });
+                            closeWin();
+                        }
+                        
+                        
+                    }
+                });
+            } 
+            
+        }
+        function closeWin(){
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭 
+        }
+        </script>
+    </body> 
+</html>

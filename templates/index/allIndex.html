@@ -63,7 +63,6 @@
             <div class="row">
                 <div class="table-responsive">
                   <table class="table">
-                    <caption></caption>
                     <thead>
                       <tr>
                         <th>Port Name</th>
@@ -79,8 +78,8 @@
                         <th>Rx Count(Frames)</th>
                         <th>Tx Rate(Frames)</th>
                         <th>Rx Rate(Frames)</th>
-                        <th>Tx Rate(precent)</th>
-                        <th>Rx Rate(precent)</th>
+                        <!-- <th>Tx RateF(precent)</th> -->
+                        <!-- <th>Rx RateF(precent)</th> -->
                     </tr>
                     </thead>
                     <tbody id ="data">
@@ -96,7 +95,7 @@
         getAllRate();
         setInterval(function () {
             getAllRate();
-        },6000);
+        },1000);
         function getAllRate(){
             $.ajax({
                     type:"get",
@@ -104,25 +103,25 @@
                     data:{},//表单数据
                     dataType:"json",//json,xml,html,text
                     success:function(data){
-                        console.log(data);
+                        // console.log(data);
                         var strHtml ="";
                         for (var i = 0; i < data.length; i++) {
                             strHtml +="<tr>" 
-                            strHtml+="<td>"+data[i].portname+"</td>";
-                            strHtml+="<td>"+data[i].totalTxBits+"</td>";
-                            strHtml+="<td>"+data[i].totalRxBits+"</td>";
-                            strHtml+="<td>"+data[i].txCountBits+"</td>";
-                            strHtml+="<td>"+data[i].rxCountBits+"</td>";
-                            strHtml+="<td>"+data[i].txRateMbps+"</td>";
-                            strHtml+="<td>"+data[i].rxRateMbps+"</td>";
-                            strHtml+="<td>"+data[i].txRateMbpsPrecent+"</td>";
-                            strHtml+="<td>"+data[i].rxRateMbpsPrecent+"</td>";
-                            strHtml+="<td>"+data[i].txCountFrames+"</td>";
-                            strHtml+="<td>"+data[i].rxCountFrames+"</td>";
-                            strHtml+="<td>"+data[i].txRateFrames+"</td>";
-                            strHtml+="<td>"+data[i].rxRateFrames+"</td>";
-                            strHtml+="<td>"+data[i].rxRateFramesPrecent+"</td>";
-                            strHtml+="<td>"+data[i].rxRateFramesPrecent+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].portname+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].totalTxBits+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].totalRxBits+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].txCountBits+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].rxCountBits+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].txRateMbps+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].rxRateMbps+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].txRateMbpsPrecent+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].rxRateMbpsPrecent+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].txCountFrames+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].rxCountFrames+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].txRateFrames+"</td>";
+                            strHtml+="<td style='text-align: center;'>"+data[i].rxRateFrames+"</td>";
+                            // strHtml+="<td style='text-align: center;'>"+data[i].rxRateFramesPrecent+"</td>";
+                            // strHtml+="<td style='text-align: center;'>"+data[i].rxRateFramesPrecent+"</td>";
                             strHtml+="</tr>";
                         };
                         $("#data").html(strHtml);

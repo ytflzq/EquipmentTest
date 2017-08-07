@@ -45,7 +45,6 @@
                     data: $('form').serialize(),//表单数据
                     dataType:"json",//json,xml,html,text
                     success:function(d){
-                        alert(d);
                         if(d=="success"){
                             layer.msg('修改成功！');//保存成功提示
                             parent.location.reload(); // 父页面刷新

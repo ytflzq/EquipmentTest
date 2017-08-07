@@ -19,7 +19,7 @@
                 margin: 0;
                 padding: 0;
                 margin-right: 10px;
-                float: right;
+                float: left;
                 width: 30px;
                 height: 30px;
             }
@@ -43,7 +43,7 @@
                 padding: 0;
                 margin-left: 10px;
                 float: left;
-                width: 140px;
+                width: 90px;
                 height: 30px;
                 font-size: 14px;
                 line-height: 30px;
@@ -55,9 +55,13 @@
             <div class="row">
                 <div class="tools">
                     <div class="toolTitle">接口名:{{interface}}</div>
-                    <!-- <div class="tool" title="配置接口"><img onclick="configInterfaceOption('{{interface}}');" src="/static/img/start.png"></div>
-                    <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div>
-                    <div class="toollast"></div> -->
+                    <div class="tool" title="停止发送数据"><img onclick="configInterfaceOption('{{interface}}');" src="/static/img/stoprx.png"></div>
+                    <!-- <div class="tool" title="配置应用层URL"><img onclick="configApplication('{{interface}}');" src="/static/img/config.png"></div> -->
+                    <div class="tool" title="历史发包"><img onclick="history('{{interface}}');" src="/static/img/config.png"></div>
+                    <!-- <div class="tool" id='startPacket' title="开始抓包"><img onclick="startPacket('{{interface}}');" src="/static/img/start.png"></div> -->
+                    <!-- <div class="tool" id='stopPacket' title="开始抓包"><img onclick="stopPacket('{{interface}}');" src="/static/img/start.png"></div> -->
+                    <!-- <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div> -->
+                    <div class="toollast"></div>
                 </div>
             </div>
             <div class="row">
@@ -79,27 +83,14 @@
                     <caption></caption>
                     <thead>
                       <tr>
-                        <th>序号</th>
-                        <th>时间</th>
-                        <th>速率大小</th></tr>
+                        <th style='text-align: center;'>时间</th>
+                        <th style='text-align: center;'>发送速率Mbps</th>
+                        <th style='text-align: center;'>发送百分比</th>
+                        <th style='text-align: center;'>接收速率Mbps</th>
+                        <th style='text-align: center;'>接收接收百分比</th></tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>2017-8-1 09:52:42</td>
-                        <td>10M/s</td></tr>
-                      <tr>
-                        <td>2</td>
-                        <td>2017-8-1 09:52:42</td>
-                        <td>10M/s</td></tr>
-                      <tr>
-                        <td>3</td>
-                        <td>2017-8-1 09:52:42</td>
-                        <td>10M/s</td></tr>
-                      <tr>
-                        <td>4</td>
-                        <td>2017-8-1 09:52:42</td>
-                        <td>10M/s</td></tr>
+                    <tbody id = "data">
+                      
                     </tbody>
                   </table>
                 </div>
@@ -111,16 +102,17 @@
             <div></div>
         </div>
         <script type="text/javascript">
-
+        var txName = "";
+        var rxName = "";
         var gaugeOption =  {
             tooltip : {
-                formatter: "{a} <br/>{b}:{c}"
+                formatter: "发送实时占比{c}%"
             },
             series : [
                 {
                     name:'发送实时速率',
                     type:'gauge',
-                     center : ['75%', '55%'],
+                    center : ['75%', '55%'],
                     splitNumber: 10,       // 分割段数，默认为5
                     axisLine: {            // 坐标轴线
                         lineStyle: {       // 属性lineStyle控制线条样式
@@ -152,14 +144,16 @@
                     },
                     title : {
                         show : true,
-                        offsetCenter: [0, '-40%'],       // x, y，单位px
+                        offsetCenter: [0, '30%'],       // x, y，单位px
                         textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                             fontWeight: 'bolder'
                         }
                     },
                     detail : {
-                        formatter:'{value}Mbps',
-                        offsetCenter: [0, '30%'],
+                        formatter:function (value) {
+                            return txName+"Mbps";
+                        },
+                        offsetCenter: [0, '50%'],
                         textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                             color: 'auto',
                             fontWeight: 'bolder',
@@ -203,13 +197,16 @@
                     },
                     title : {
                         show : true,
-                        offsetCenter: [0, '-40%'],       // x, y，单位px
+                        offsetCenter: [0, '30%'],       // x, y，单位px
                         textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                             fontWeight: 'bolder'
                         }
                     },
                     detail : {
-                        formatter:'{value}Mbps',
+                        // formatter:'{value}Mbps',
+                        formatter:function (value) {
+                            return rxName+"Mbps";
+                        },
                         offsetCenter: [0, '50%'],
                         textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                             color: 'auto',
@@ -371,7 +368,7 @@
                 },
                 itemStyle: {
                     normal: {
-                        color: 'rgb(137,189,27)',
+                        color: 'rgb(44,23,27)',
                         borderColor: 'rgba(137,189,2,0.27)',
                         borderWidth: 12
 
@@ -387,11 +384,8 @@
             // console.log(lineOption.xAxis[0]);
             getRate();
             
-        },1000);
-        // setInterval(function () {
-        //     gaugeOption.series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0;
-        //     myChart.setOption(gaugeOption, true);
-        // },2000);
+        },10000);
+
         function getRate(){
             $.ajax({
                     type:"get",
@@ -399,30 +393,82 @@
                     data:{"interface":'{{interface}}'},//表单数据
                     dataType:"json",//json,xml,html,text
                     success:function(dataArr){
+                        console.log(dataArr);
+                        txName = dataArr[1][dataArr[1].length-1];
+                        rxName = dataArr[2][dataArr[2].length-1];
                         lineOption.xAxis[0].data = dataArr[0];
                         lineOption.series[0].data = dataArr[1];
                         lineOption.series[1].data = dataArr[2];
                         lineChart.setOption(lineOption);
-                        gaugeOption.series[0].data[0].value = dataArr[1][dataArr[1].length-1]
-                        gaugeOption.series[1].data[0].value = dataArr[2][dataArr[1].length-1]
+                        gaugeOption.series[0].data[0].value = dataArr[3][dataArr[3].length-1]
+                        gaugeOption.series[1].data[0].value = dataArr[4][dataArr[4].length-1]
                         myChart.setOption(gaugeOption, true);
+                        reflashTable(dataArr);
                     }
                 });
         }
 
 
+        function reflashTable(dataArr){
+            var strHtml ="";
+            for (var i = dataArr[0].length-1; i >0 ; i--) {
+                 strHtml +="<tr>" 
+                 strHtml+="<td style='text-align: center;'>"+dataArr[0][i]+"</td>";
+                 strHtml+="<td style='text-align: center;'>"+dataArr[1][i]+"</td>";
+                 strHtml+="<td style='text-align: center;'>"+dataArr[3][i]+"%</td>";
+                 strHtml+="<td style='text-align: center;'>"+dataArr[2][i]+"</td>";
+                 strHtml+="<td style='text-align: center;'>"+dataArr[4][i]+"%</td>";
+                 strHtml +="</tr>";
+            };
+            $("#data").html(strHtml);
+        }
         function configInterfaceOption(interface){
+            $.ajax({
+                    type:"get",
+                    url:"/app/stopRun",
+                    data: {"interfacename":interface},//表单数据
+                    dataType:"json",//json,xml,html,text
+                    success:function(d){
+                        if(d=="success"){
+                            alert('停止发送数据成功');
+                            setTimeout(function(){
+                                window.location = " CCC://";
+                            },3000);
+                            
+                            // parent.layer.msg('');//保存成功提示
+                        }
+                    }
+                });
+        }
+        function startPacket(interface){
+
+        }
+        function stopPacket(interface){
+            
+        }
+        function history(interface){
+          parent.layer.open({
+                type: 2,
+                title: '历史发包数据',
+                shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+                shade: 0.8,
+                move: false,
+                area: ['800px', '600px'],
+                offset: ['200px'],
+                content: '/app/showHistory?interface='+interface //iframe的url
+          });
+        }
+        function configApplication(){
             parent.layer.open({
-              type: 2,
-              title: '配置接口',
-              shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
-              shade: 0.8,
-              btnAlign: 'c',
-              closeBtn:2,
-              area: ['500px', '400px'],
-              offset: ['200px'],
-              content: '/app/interfaceEdit?name='+interface //iframe的url
-            }); 
+                type: 2,
+                title: '配置应用层URL',
+                shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+                shade: 0.8,
+                move: false,
+                area: ['400px', '300px'],
+                offset: ['200px'],
+                content: '/app/configApplication' //iframe的url
+              }); 
         }
         </script>
     </body> 

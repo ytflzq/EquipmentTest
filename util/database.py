@@ -34,7 +34,7 @@ class Database:
         cursor = self.get_cursor()     
         cursor.execute(sql,params)     
              
-        print "select_fetchall sql: %s" %(sql)     
+        # print "select_fetchall sql: %s" %(sql)     
              
         items = cursor.fetchall()     
              

@@ -7,7 +7,13 @@
     <interface capture="3" description="12" name="G1/5" quote="3" /> 
   </interfaces>   
   <users>
-  	<user id="1" interface="T1/1,T1/2,G4/1,G4/8,T2/1" name="test" password="12345" />
-  	<user id="2" interface="T2/2,G4/2,G4/5,G4/7" name="test1" password="test123" />s
+    <user id="1" interface="" name="test" password="123456" />
+    <user id="2" interface="" name="yuantingfei" password="123456" />
+    <user id="3" interface="" name="wuhuanzheng" password="123456" />
+    <user id="4" interface="T3/2,T3/1" name="xiezhengming" password="123456" />
+  	<user id="5" interface="" name="dongying" password="123456" />
   </users>
+  <history>
+
+  <data filename="2017-08-03-14-25-50.xml" time="2017:08:03 14:25:50" username="yuantingfei" /><data filename="2017-08-03-14-26-22.xml" time="2017:08:03 14:26:22" username="yuantingfei" /><data filename="2017-08-03-14-26-56.xml" time="2017:08:03 14:26:56" username="yuantingfei" /><data filename="2017-08-03-14-54-13.xml" time="2017:08:03 14:54:13" username="yuantingfei" /><data filename="2017-08-03-14-57-01.xml" time="2017:08:03 14:57:01" username="yuantingfei" /><data filename="2017-08-03-15-53-06.xml" time="2017:08:03 15:53:06" username="yuantingfei" /><data filename="2017-08-03-15-54-48.xml" time="2017:08:03 15:54:48" username="yuantingfei" /><data filename="2017-08-03-15-54-53.xml" time="2017:08:03 15:54:53" username="yuantingfei" /><data filename="2017-08-03-15-54-59.xml" time="2017:08:03 15:54:59" username="yuantingfei" /><data filename="2017-08-03-15-55-04.xml" time="2017:08:03 15:55:04" username="yuantingfei" /><data filename="2017-08-03-15-55-10.xml" time="2017:08:03 15:55:10" username="yuantingfei" /><data filename="2017-08-03-15-55-15.xml" time="2017:08:03 15:55:15" username="yuantingfei" /><data filename="2017-08-03-15-55-20.xml" time="2017:08:03 15:55:20" username="yuantingfei" /><data filename="2017-08-03-15-55-26.xml" time="2017:08:03 15:55:26" username="yuantingfei" /></history>
 </root>

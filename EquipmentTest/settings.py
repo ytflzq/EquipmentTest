@@ -70,7 +70,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'EquipmentTest.wsgi.application'
-
+SESSION_COOKIE_AGE=60*30
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'EquipmentTest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join('/tmp/', 'db.sqlite3'),
     }
 }
 

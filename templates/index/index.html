@@ -1,7 +1,8 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>配置管理</title>
+<title>
+盒子设备秒变测试仪</title>
 <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
 <script type="text/javascript" src="/static/js/layer.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
@@ -26,9 +27,9 @@ $(document).ready(function(){
 <body>
 <div class="top">
     <div class="user">
-    盒子设备秒变测试仪
+        盒子设备秒变测试仪&nbsp;&nbsp;&nbsp;
         <img src="/static/img/user.png">
-        <span>欢迎您，管理员{{name}} </span>
+        <span>欢迎您，管理员</span><span style="color:red;">{{name}}&nbsp;&nbsp;&nbsp; </span>
         <span onclick="loginout();" style="cursor: pointer;">|退出</span>
         <span onclick="changepwd();" style="cursor: pointer;">|修改密码</span>
         <!-- <button type="button" class="btn btn-sm btn-default"  onclick="loginout();">退出</button> -->
@@ -37,11 +38,12 @@ $(document).ready(function(){
 <div style="clear: both;"></div>
 <div class="tools">
     <div class="toolTitle">工具栏</div>
-    <div class="tool" title="配置报文"><a href=" CCC://"><img src="/static/img/start.png"></a></div>
+    <div class="tool" title="配置报文"><a href=" CCC://"><img src="/static/img/config.png"></a></div>
     <div class="tool" title="绑定接口"><img onclick="bindInterface();" src="/static/img/import.png"></div>
-    <div class="tool" title="停止接口"><img onclick="stopInterface();" src="/static/img/stop.png"></div>
+    <!-- <div class="tool" title="发送"><img onclick="startSend();" src="/static/img/start.png"></div> -->
     <!-- <div class="tool" title="新建报文组"><img onclick="addMessage();" src="/static/img/add.png"></div> -->
-    <!-- <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import.png"></div> -->
+    <div class="tool" title="导入配置"><img onclick="importFile();" src="/static/img/import2.png"></div>
+    <!-- <div class="tool" title="历史发包"><img onclick="history();" src="/static/img/config.png"></div> -->
     <div class="tool"></div>
 </div>
 <div class="center">
@@ -57,6 +59,7 @@ $(document).ready(function(){
             {% endfor %}   
           </ul> 
         </div>
+        
       </div> 
     </div>
     <div class="right">
@@ -130,6 +133,18 @@ function bindInterface(){
         offset: ['200px'],
         content: '/login/bindInterface' //iframe的url
       });
+}
+function history(){
+  layer.open({
+        type: 2,
+        title: '历史发包数据',
+        shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+        shade: 0.8,
+        move: false,
+        area: ['800px', '600px'],
+        offset: ['200px'],
+        content: '/app/showHistory' //iframe的url
+  });
 }
 </script>
 </body>

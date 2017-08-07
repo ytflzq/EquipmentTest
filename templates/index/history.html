@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/layui.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+        <script type="text/javascript" src="/static/js/layer.js"></script>
+    </head>
+    <body style="width: 100%;padding-top: 20px;">
+        <div>
+            <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th style='text-align: center;'>时间</th>
+                        <th style='text-align: center;'>文件名</th>
+                        <th style='text-align: center;'>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      {% for x in data %}
+                        <tr>
+                        <td style='text-align: center;'>{{x.time}}</td>
+                        <td style='text-align: center;'>{{x.filename}}</td>
+                        <td style='text-align: center;'><button class="btn btn-mini" onclick="deleteOption('{{x.filename}}');" type="button">删除</button>
+                            <button class="btn btn-mini" onclick="configOption('{{interface}}','{{x.filename}}');" type="button">启动发包</button></td>
+                        </tr>
+                        {% endfor %} 
+                    </tbody>
+                  </table>
+                </div>
+        </div>
+        <div style="position: absolute;bottom: 20px;right: 20px;">
+            <button class="layui-btn" onclick="closeWin();">关闭</button>
+        </div>
+        <script>
+        function validateData(){
+            if ($("#name").val()=="") {
+                layer.alert("报文名称不能为空！");
+                return false;
+            }
+            return true;
+        }
+        function closeWin(){
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭 
+        }
+        function deleteOption(filename){
+            $.ajax({
+                    type:"get",
+                    url:"/app/deleteHistory",
+                    data: {"filename":filename},//表单数据
+                    dataType:"json",//json,xml,html,text
+                    success:function(d){
+                        if(d=="success"){
+                            layer.msg('删除成功！');//保存成功提示
+                            closeWin();
+                            
+                            parent.layer.open({
+                                    type: 2,
+                                    title: '历史发包数据',
+                                    shadeClose: false,//如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+                                    shade: 0.8,
+                                    move: false,
+                                    area: ['800px', '600px'],
+                                    offset: ['200px'],
+                                    content: '/app/showHistory' //iframe的url
+                              });
+                        }
+                    }
+                });
+        }
+        function configOption(interface,filename){
+            $.ajax({
+                    type:"get",
+                    url:"/app/configHistory",
+                    data: {"filename":filename,'interface':interface},//表单数据
+                    dataType:"json",//json,xml,html,text
+                    success:function(d){
+                        if(d=="success"){
+                            closeWin();
+                            $(parent.document).find("#iframeParent").attr("src","/app/rate?name="+interface);
+                        }
+                    }
+                });
+        }
+        </script>
+    </body> 
+</html>

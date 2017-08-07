@@ -20,7 +20,6 @@ demopath = os.path.join(BASE_DIR, 'data/demo.xml')
 #*************************************Url函数*******************************************************
 def index(request):
     name = request.session.get('name',default=None)
-    role_id = request.session.get('role_id',default=False)
     templateFile = "index/index.html"
     interfaces = request.session.get('interface',default="")
     print 111
@@ -44,6 +43,41 @@ def allIndex(request):
         params,
         RequestContext(request)
     )
+def configApplication(request):
+    templateFile = "index/configApplication.html"
+    params={}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )
+def showConfigApplication(request):
+    templateFile = "index/showConfigApplication.html"
+    params={}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )  
+
+def getConfigApplicationResult(request):
+    file_object = open('/tmp/applicationResult')
+    try:
+        all_the_text = file_object.read( )
+    finally:
+        file_object.close()
+    stringHtml = str(all_the_text)
+    return HttpResponse(json.dumps(stringHtml, ensure_ascii=False))
+@csrf_exempt
+def doConfigApplication(request):
+    url = request.POST["url"]
+    ip = request.POST["ip"]
+    count = request.POST["count"]
+    print url,ip,count
+    
+    status = "success"
+    return HttpResponse(json.dumps(status, ensure_ascii=False))
+
 @csrf_exempt
 def getAllRate(request):
     result = []
@@ -58,43 +92,121 @@ def getAllRate(request):
             continue
         if interfaces.find(x['portname'])!=-1:
             if x['portname'].find("T")!=-1:
-                x['txRateMbpsPrecent'] = int(x['txRateMbps'])/10240.00
-                x['rxRateMbpsPrecent'] = int(x['rxRateMbps'])/10240.00
-                x['rxRateFramesPrecent'] = int(x['txRateFrames'])/10240.00
-                x['rxRateFramesPrecent'] = int(x['rxRateFrames'])/10240.00
+                # print "portname",x['portname'],"txRateFrames",x['txRateFrames']
+                x['txRateMbpsPrecent'] = str(round(int(x['txRateMbps'])/10240.00*100,2))+"%"
+                x['rxRateMbpsPrecent'] = str(round(int(x['rxRateMbps'])/10240.00*100,2))+"%"
+                # x['rxRateFramesPrecent'] = str(round(int(x['txRateFrames'])/10240.00*100,2))+"%"
+                # x['rxRateFramesPrecent'] = str(round(int(x['rxRateFrames'])/10240.00*100,2))+"%"
             else:
-                x['txRateMbpsPrecent'] = int(x['txRateMbps'])/1024.00
-                x['rxRateMbpsPrecent'] = int(x['rxRateMbps'])/1024.00
-                x['rxRateFramesPrecent'] = int(x['txRateFrames'])/1024.00
-                x['rxRateFramesPrecent'] = int(x['rxRateFrames'])/1024.00
+                x['txRateMbpsPrecent'] = str(round(int(x['txRateMbps'])/1024.00*100,2))+"%"
+                x['rxRateMbpsPrecent'] = str(round(int(x['rxRateMbps'])/1024.00*100,2))+"%"
+                x['rxRateFramesPrecent'] = str(round(int(x['txRateFrames'])/1024.00*100,2))+"%"
+                x['rxRateFramesPrecent'] = str(round(int(x['rxRateFrames'])/1024.00*100,2))+"%"
             result.append(x)
         else:
             continue
     return HttpResponse(simplejson.dumps(result), content_type="application/json; charset=utf-8")
+def startRun(request):
+    interfacename= request.GET['interfacename']
+    interfacename = interfacename.replace('_','/')
+    print "after replace",interfacename
+    filename= request.GET['filename']
+    portname = getPortInterfaceByName(interfacename)
+    print portname
+    if portname!="":
+        now = datetime.datetime.now()
+        filenameNew =  time.strftime('%Y-%m-%d-%H-%M-%S',time.localtime(time.mktime(now.timetuple())))+".xml"
+        filenameTime = time.strftime('%Y:%m:%d %H:%M:%S',time.localtime(time.mktime(now.timetuple())))
+        # username = request.session.get('name',default="")
+        username = "yuantingfei"
+        saveHistory(filenameNew,filenameTime,username)
+        os.system("cp /root/"+filename+".xml"+" /root/onekey/config/"+filenameNew)
+        print "commond is:"+"/root/l2fwd_client "+portname+" /root/"+filename
+        os.system("/root/l2fwd_client "+portname+" /root/"+filename+".xml > /dev/null 2>&1 &")
+        return HttpResponse(simplejson.dumps("ok"), content_type="application/json; charset=utf-8")
+    else:
+        return HttpResponse(simplejson.dumps("fail"), content_type="application/json; charset=utf-8")
+def configHistory(request):
+    portname = getPortInterfaceByName(request.GET['interface'])
+    filename = request.GET['filename']
+    print "request.GET['interface']",request.GET['interface']
+    print portname,filename,"/root/l2fwd_client "+portname+" /root/onekey/config/"+filename+" > /dev/null 2>&1 &"
+    os.system("/root/l2fwd_client "+portname+" /root/onekey/config/"+filename+" > /dev/null 2>&1 &")
+    return HttpResponse(simplejson.dumps("success"), content_type="application/json; charset=utf-8")
+def deleteHistory(request):
+    filename = request.GET['filename']
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
+    root  = tree.getroot()
+    for x in root.findall("./history/data"):
+        if x.attrib['filename']==filename:
+            root.find("./history").remove(x)
+    tree.write(os.path.join(BASE_DIR, 'data/config.xml'))
+    return HttpResponse(simplejson.dumps("success"), content_type="application/json; charset=utf-8")
+def saveHistory(filename,filenameTime,username):
+    dic = {}
+    dic['username'] = username
+    dic['filename'] = filename
+    dic['time'] = filenameTime
+    data = doXml2.create_node("data",dic,"")
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
+    root  = tree.getroot()
+    root.find("./history").append(data)
+    tree.write(os.path.join(BASE_DIR, 'data/config.xml'))
+    pass
+def stopRun(request):
+    portname = getPortInterfaceByName(request.GET['interfacename'])
+    print 1111,portname
+    #sprintf(killstr, "ps x|grep \"%s %s\"|grep -v grep|grep -v gdb|grep -v %d|awk '{print $1}'|xargs kill -9", argv[0], port,pid);
+    os.system("""ps x | grep l2fwd_client | grep -w """ + portname + """ | grep -v grep | grep -v gdb | awk '{print $1}' | xargs kill -9 > /dev/null 2>&1""")
+    return HttpResponse(simplejson.dumps("success"), content_type="application/json; charset=utf-8")
 @csrf_exempt
 def getRate(request):
     interface= request.GET['interface']
-    interface = getInterfaceByName(interface)
+    interface = getPortInterfaceByName(interface)
     result = []
     dataTimes = []
-    updatas = []
-    downdatas = []
+    txdatas = []
+    rxdatas = []
+    txRateMbpsPrecent = []
+    rxRateMbpsPrecent = []
     now = datetime.datetime.now()
     database = Database()
-    row = database.select_fetchall("""SELECT id,txRateMbps,rxRateMbps FROM interfaceStatusHistory where portname=%s ORDER BY id ASC LIMIT 10
+    row = database.select_fetchall("""SELECT id,portname,txRateMbps,rxRateMbps FROM interfaceStatusHistory where portname=%s ORDER BY id DESC LIMIT 10
          """, [interface])
     i=0
+    # print "len(row)",len(row)
     for x in row:
+        # print "id:",x['id'],"txRateMbps:",x['txRateMbps'],"rxRateMbps:",x['rxRateMbps']
+        x['portname'] = getInterfaceByport(x['portname'])
+        if x['portname'].find("T")!=-1:
+            txRateMbpsPrecent.append(round(int(x['txRateMbps'])/10240.00*100,2))
+            rxRateMbpsPrecent.append(round(int(x['rxRateMbps'])/10240.00*100,2))
+        else:
+            txRateMbpsPrecent.append(round(int(x['txRateMbps'])/1024.00*100,2))
+            rxRateMbpsPrecent.append(round(int(x['rxRateMbps'])/1024.00*100,2))
         dt = now-datetime.timedelta(seconds=20-i) #timedelta([days[, seconds[, microseconds[, milliseconds[, minutes[, hours[, weeks]]]]]]])
         # dataTimes.append(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.mktime(dt.timetuple()))))
         dataTimes.append(time.strftime('%H:%M:%S',time.localtime(time.mktime(dt.timetuple()))))
-        updatas.append(int(x['txRateMbps']))
-        downdatas.append(int(x['rxRateMbps']))
+        txdatas.append(int(x['txRateMbps']))
+        rxdatas.append(int(x['rxRateMbps']))
         i = i+1
-    
+    if i==0:
+        dataTimes.append(0)
+        txdatas.append(0)
+        rxdatas.append(0)
+        txRateMbpsPrecent.append(0)
+        rxRateMbpsPrecent.append(0)
+    txdatas = list(reversed(txdatas))
+    rxdatas = list(reversed(rxdatas))
+    txRateMbpsPrecent = list(reversed(txRateMbpsPrecent))
+    rxRateMbpsPrecent = list(reversed(rxRateMbpsPrecent))
+
     result.append(dataTimes)
-    result.append(updatas)
-    result.append(downdatas)
+    result.append(txdatas)
+    result.append(rxdatas)
+    result.append(txRateMbpsPrecent)
+    result.append(rxRateMbpsPrecent)
+
     return HttpResponse(simplejson.dumps(result), content_type="application/json; charset=utf-8")
 
 
@@ -294,12 +406,27 @@ def createMessage(request):
     pass
 def exit(request):
     remark = "注销"
-    database = Database()
-    database.execute(""" insert into log(type,user_id,remark,time)values(%s,%s,%s,%s)""",[2,request.session['user_id'],remark,datetime.datetime.now()])
-    del request.session['name']
-    del request.session['user_id']
+    # database = Database()
+    # database.execute(""" insert into log(type,user_id,remark,time)values(%s,%s,%s,%s)""",[2,request.session['user_id'],remark,datetime.datetime.now()])
     return HttpResponseRedirect('/login')  #跳转到index界面  
 
+def getHistory():
+    data = []
+    tree = doXml2.read_xml(os.path.join(BASE_DIR, 'data/config.xml'))
+    datas = doXml2.find_nodes(tree, "history/data")
+    for x in datas:
+        data.append(x.attrib)
+    return data
+def showHistory(request):
+    interface = request.GET['interface']
+    templateFile = "index/history.html"
+    data = getHistory()
+    params={"data":data,"interface":interface}
+    return render_to_response(
+        templateFile,
+        params,
+        RequestContext(request)
+    )
 
 def eth(request):
     packet = request.GET['packet']
@@ -666,7 +793,7 @@ def getInterfaceByport(port):
             return x.attrib['name']
     return ""
 
-def getInterfaceByName(name):
+def getPortInterfaceByName(name):
     interfacepath = os.path.join(BASE_DIR, 'data/interface_phy.xml')
     tree = doXml2.read_xml(interfacepath)
     root = tree.getroot()
